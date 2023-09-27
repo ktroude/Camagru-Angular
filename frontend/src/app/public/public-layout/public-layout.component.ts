@@ -21,6 +21,6 @@ export class PublicLayoutComponent {
   constructor(private router: Router) { }
 
   redirect(path:string) {
-  this.router.navigate(["/" + path]); // Redirige vers la route '/login'
-}
+    this.router.navigate([path]);
+  }
 }

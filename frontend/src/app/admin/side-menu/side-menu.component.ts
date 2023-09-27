@@ -1,15 +1,25 @@
-import { Component } from '@angular/core';
+import { Component } from "@angular/core";
 
 @Component({
-  selector: 'app-side-menu',
+  selector: "app-side-menu",
   template: `
-    <p>
-      side-menu works!
-    </p>
+    <div class="menu_body">
+      <div class="chapitre">
+        <p>User</p>
+        <button>Index</button>
+        <button>Edit</button>
+        <button>Add</button>
+        <button>Delete</button>
+      </div>
+      <div class="chapitre">
+        <p>Post</p>
+        <button>Index</button>
+        <button>Edit</button>
+        <button>Add</button>
+        <button>Delete</button>
+      </div>
+    </div>
   `,
-  styles: [
-  ]
+  styleUrls: ["./side-menu.css"],
 })
-export class SideMenuComponent {
-
-}
+export class SideMenuComponent {}

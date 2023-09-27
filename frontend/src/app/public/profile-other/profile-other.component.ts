@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-user-edit',
+  selector: 'app-profile-other',
   template: `
     <p>
-      user-edit works!
+      profile-other works!
     </p>
   `,
   styles: [
   ]
 })
-export class UserEditComponent {
+export class ProfileOtherComponent {
 
-    constructor(private activated: ActivatedRoute){}
+  constructor(private activated: ActivatedRoute){}
 
   ngOnInit(): void{
     this.activated.params.subscribe(
@@ -22,5 +22,4 @@ export class UserEditComponent {
       }
     );
   }
-
 }

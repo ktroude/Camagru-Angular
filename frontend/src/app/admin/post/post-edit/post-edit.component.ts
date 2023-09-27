@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-post-edit',
@@ -11,5 +12,13 @@ import { Component } from '@angular/core';
   ]
 })
 export class PostEditComponent {
+  constructor(private activated: ActivatedRoute){}
 
+  ngOnInit(): void{
+    this.activated.params.subscribe(
+      (data) => {
+        console.log(data);
+      }
+    );
+  }
 }

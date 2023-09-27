@@ -1,0 +1,55 @@
+
+@font-face {
+  font-family: 'Chillax Bold';
+  src: url('../../../assets/font/Chillax-Bold.otf');
+}
+
+@font-face {
+  font-family: 'Chillax';
+  src: url('../../../assets/font/Chillax-Regular.otf');
+}
+
+.menu_body{
+    height: 100%;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    background-color: #a4a4a4;
+    border-right: 2px solid rgb(66, 141, 255);
+    overflow: scroll;
+}
+
+.chapitre{
+    font-family: "Chillax Bold";
+    font-size: 2rem;
+    color: rgb(227, 231, 242);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 50%;
+    border-bottom: 2px solid rgb(66, 141, 255);
+    overflow: scroll;
+}
+
+
+
+button{
+    width: 95%;
+    margin-bottom: 1vw;
+    color: white;
+    font-family: "Chillax";
+    background-color: rgb(66, 141, 255);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, font-family 0.3s ease;
+}
+
+button:hover {
+    transition-delay: 0.3s;
+    border: 1px solid white;
+    font-family: "Chillax Bold";
+}
+

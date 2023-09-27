@@ -19,6 +19,8 @@ import io.ktroude.camagru.Role.Role;
 import io.ktroude.camagru.Role.RoleRepository;
 import io.ktroude.camagru.User.AppUser;
 import io.ktroude.camagru.User.UserRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 @Transactional
@@ -43,20 +45,40 @@ public class AuthService {
         return userRepository.save(new AppUser(0, username, email, encodedPassword, authorities));
     }
 
-    public LoginResponseDTO loginUser(String username, String password){
-        try{
-            System.out.println("username ===" + username);
-            System.out.println("password ===" + password);
-            Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, password)
-            );
-            System.out.println("AUTH ============== " + auth);
-            String token = tokenService.generateJwt(auth);
-            System.out.println("TOKEN ========= " + token);
-            return new LoginResponseDTO(userRepository.findByUsername(username).get(), token);
-        } catch(AuthenticationException e){
-            return new LoginResponseDTO(null, "");
-        }
+    public LoginResponseDTO loginUser(String username, String password, HttpServletResponse response) {
+    try {
+        Authentication auth = authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(username, password)
+        );
+        String token = tokenService.generateJwt(auth);
+        
+        Cookie cookie = new Cookie("jwt-token", token);
+        cookie.setPath("/");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(3600*24);
+        response.addCookie(cookie);
+
+        AppUser user = userRepository.findByUsername(username).orElse(null);
+        return new LoginResponseDTO(user);
+    } catch (AuthenticationException e) {
+        return new LoginResponseDTO(null);
     }
+}
+
+    public String logoutUser(HttpServletResponse response) {
+        Cookie cookie = new Cookie("jwt-token", "");
+        cookie.setPath("/logout");
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return "redirect:/login";
+    }
+
+
+
+
+
+
 
 }

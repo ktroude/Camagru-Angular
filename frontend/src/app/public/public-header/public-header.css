@@ -1,0 +1,74 @@
+
+@font-face {
+  font-family: 'Chillax Bold';
+  src: url('../../../assets/font/Chillax-Bold.otf');
+}
+
+body{
+    margin: 0px;
+    padding: 0px;
+    width: 100vw;
+}
+
+header{
+    width: 100vw;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px;
+    background-color: #a4a4a4;
+}
+
+.delimitation{
+    height: 5px;
+    width: 100%;
+    background: linear-gradient(to top, transparent, #393939);
+}
+
+.button_div{
+    margin-left: 3%;
+    padding-right: 3%;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content:space-between;
+    align-items: center;
+}
+
+.logo{
+    width: auto;
+    height: 90px;
+    margin-left: 1%;
+    cursor: pointer;
+}
+
+.header_button{
+    height: auto;
+    width: 110px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(66, 141, 255);
+    font-size: 1.2em;
+    color: rgb(227, 231, 242);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    font-family: 'Chillax Bold';
+}
+
+.header_button:hover {
+    background-color: rgb(227, 231, 242);
+    color: rgb(66, 141, 255);
+    transition-delay: 0.1s;
+}
+
+
+@media screen and (max-width: 320px) {
+ 
+    .header_button{
+        font-size: 1em;
+        width: 100px;
+    }
+
+}

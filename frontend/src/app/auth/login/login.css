@@ -1,0 +1,133 @@
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../assets/font/Chillax-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../../assets/font/Chillax-Bold.otf');
+}
+
+header{
+    background: linear-gradient(white, rgb(227, 231, 242));
+    width: 100vw;
+    height: 100px;
+    align-items: center;
+    text-align: center;
+}
+
+.logo{
+    position: absolute;
+    top:5px;
+    left:-5px;
+    width: auto;
+    height: 90px;
+    margin-left: 1%;
+    cursor: pointer;
+}
+
+.title{
+    text-align: center;
+    color: rgb(66, 141, 255);
+    font-family: "Chillax Bold";
+    flex: 1;
+}
+
+button{
+    margin-top: 2vw;
+    font-family: "Chillax";
+    height: auto;
+    width: 110px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(66, 141, 255);
+    font-size: 1.2em;
+    color: rgb(227, 231, 242);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    font-family: 'Chillax Bold';
+}
+
+button:hover {
+    background-color: rgb(227, 231, 242);
+    color: rgb(66, 141, 255);
+    transition-delay: 0.1s;
+}
+
+
+
+input{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    outline: none; 
+}
+
+input:focus {
+    border-color: rgb(66, 141, 255);
+    box-shadow: 0 0 5px rgb(66, 141, 255);
+}
+
+
+.form_container{
+    color: rgb(66, 141, 255);
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: "Chillax Bold";
+    width: 200px;
+    height: 200px;
+    margin: auto;
+}
+
+.form_container::before, .form_container::after, .form_container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.form_container::before, .form_container::after {
+    content: "";
+    z-index: -1;
+    margin: -5%;
+    box-shadow: inset 0 0 0 2px;
+    animation: clipMe 8s linear infinite;
+}
+.form_container::before {
+    animation-delay: -4s;
+}
+
+@keyframes clipMe {
+    0%, 100% {
+        clip: rect(0px, 220px, 2px, 0px);
+    }
+    25% {
+        clip: rect(0px, 2px, 220px, 0px);
+    }
+    50% {
+        clip: rect(218px, 220px, 220px, 0px);
+    }
+    75% {
+        clip: rect(0px, 220px, 220px, 218px);
+    }
+}
+
+footer{
+    font-family: "Chillax";
+    text-align: center;
+    background: linear-gradient(rgb(227, 231, 242), white);
+    width: 100vw;
+    height: 50px;
+    position: absolute;
+    bottom: 0;
+}
+
+@media screen and (max-width: 1280px){
+    .title{}
+}
+

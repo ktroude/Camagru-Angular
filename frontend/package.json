@@ -5,7 +5,10 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "watch": "ng build --watch --configuration development"
+    "watch": "ng build --watch --configuration development",
+    "compodoc": "npx compodoc -p src/tsconfig.app.json",
+    "compodoc:serve": "npx compodoc -p src/tsconfig.app.json -s",
+    "compodoc:serve:watch": "npx compodoc -p src/tsconfig.app.json -s -w"
   },
   "private": true,
   "dependencies": {

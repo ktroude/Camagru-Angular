@@ -23,4 +23,19 @@ export class UserEditComponent {
     );
   }
 
+  updateUsername(newUsername:string){
+
+  }
+
+  updateEmail(newEmail:string){
+
+  }
+
+  updatePassword(newPassword:string){
+
+  }
+
+  updateEnable(bool:boolean){
+    
+  }
 }

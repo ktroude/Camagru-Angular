@@ -25,4 +25,8 @@ export class AdminLayoutComponent {
   redirect(path:string) {
     this.router.navigate([path]);
   }
+
+  redirectId(path:string, id:number){
+    this.router.navigate([path + id.toString()])
+  }
 }

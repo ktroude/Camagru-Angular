@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { PublicLayoutComponent } from '../public-layout/public-layout.component';
 import { Router } from '@angular/router';
+import { TokenService } from 'src/app/services/token.service';
 
 @Component({
   selector: 'app-public-header',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
       <div class="button_div">
         <button class="header_button" (click)='this.redirect("/home")'>Home</button>
         <button class="header_button" (click)='this.redirect("/profile")'>Profile</button>
-        <button class="header_button" (click)='this.redirect("/logout")'>Log out</button>
+        <button class="header_button" (click)='this.logout()'>Log out</button>
       </div>
     </header>
     <div class="delimitation"></div>
@@ -21,8 +22,15 @@ import { Router } from '@angular/router';
 })
 export class PublicHeaderComponent extends PublicLayoutComponent {
 
-  constructor(router:Router){
+  constructor(
+    router:Router,
+    private tokenService:TokenService,
+    ){
     super(router);
+  }
+
+  logout(): void{
+    this.tokenService.clearToken();
   }
 
 }

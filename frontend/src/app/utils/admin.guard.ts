@@ -1,10 +1,14 @@
 import { inject } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
+import { TokenService } from "../services/token.service";
 
 export const adminGuard: CanActivateFn = (route:ActivatedRouteSnapshot, state:RouterStateSnapshot) => {
-    const router = inject(Router);
+    const router: Router = inject(Router);
+    const tokenService: TokenService = inject(TokenService);
 
-  return router.navigate(['auth'])
+    if (tokenService.isLogged())
+      return router.navigate(['admin']);
+    return true;
 };
 
 // a implementer : checker les cookies, checker le jwt, checker le status du mec

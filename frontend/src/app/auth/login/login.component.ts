@@ -1,38 +1,104 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { HttpClient } from "@angular/common/http";
+import { Component } from "@angular/core";
+import { Router } from "@angular/router";
+import { Credentials, Token } from "src/app/interface/auth.interface";
+import { AuthService } from "src/app/services/auth.service";
+import { TokenService } from "src/app/services/token.service";
 
 @Component({
-  selector: 'app-login',
+  selector: "app-login",
   template: `
-  <body>
-    <header>
-          <img class="logo" src="assets/img/photos_660489.png" alt="logo" (click)='this.redirect("auth/login")'>
-        <!-- <div class="title_container"> -->
-          <h1 class="title">CAMAGRU</h1>
-        <!-- </div> -->
-    </header>
-    <div class="form_container">
-      <label for="username">Username</label>
-      <input type="text" name="username" id="username">
-      <label for="password">Password</label>
-      <input class="pw_input" type="password" name="password" id="password">
-      <button>Login</button>
-    </div>
-    <footer>
-      <p>© 2023 Camagru. No rights reserved.</p>
-    </footer>
-  </body>
+    <body>
+      <header>
+        <img
+          class="logo"
+          src="assets/img/photos_660489.png"
+          alt="logo"
+          (click)="this.redirect('auth/login')"
+        />
+        <h1 class="title">CAMAGRU</h1>
+      </header>
+      <div class="form_container">
+        <form name="auth_form" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()">
+          <label for="username">Username</label>
+          <input
+          type="text"
+          name="username"
+          id="username"
+          autocomplete="off"
+          [(ngModel)]="form.username"
+          #username="ngModel"
+          required
+          />
+          <p class="form_error" *ngIf="username.errors && username.errors['required'] && f.submitted">Username is required</p>
+          <label class="pw_input" for="password">Password</label>
+          <input
+          type="password"
+          name="password"
+          id="password"
+          autocomplete="off"
+          [(ngModel)]="form.password"
+          #password="ngModel"
+          required
+          minlength="8"
+          />
+          <p class="form_error" *ngIf="password.errors && password.errors['required'] && f.submitted">Password is required</p>
+          <p class="form_error" *ngIf="password.errors && password.errors['minlengt'] && f.submitted">Password must be at least 8 characters</p>
+          <button>Login</button>
+          <a (click)="redirect('/auth/recover')">Password forgot?</a>
+          <p class="form_error" *ngIf="match === false">
+            Username or password incorect !
+          </p>
+        </form>
+      </div>
+      <div class="login_button">
+        <button (click)="this.redirect('auth/register')">Sign In</button>
+      </div>
+      <footer>
+        <p>© 2023 Camagru - All wrongs reserved</p>
+      </footer>
+    </body>
   `,
-  styleUrls: [
-    "./login.css",
-  ]
+  styleUrls: ["./login.css"],
 })
 export class LoginComponent {
+  form:Credentials = {
+    username: "",
+    password: "",
+  };
 
-  constructor(private router: Router) { }
+  match:boolean = true;
 
-  redirect(path:string) {
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private tokenService: TokenService,
+    ) {}
+
+  redirect(path: string) {
     this.router.navigate([path]);
   }
+
+onSubmit() {
+  console.log(this.form);
+  this.authService.login(this.form).subscribe({
+    next: (data:Token) => {
+      if (data.access_token) {
+        this.tokenService.saveToken(data.access_token);
+        console.log(data.access_token);
+        this.router.navigate(['user'])
+      }
+    },
+    error: (err: any) => {
+      console.log(err);
+      this.match = false;
+    }
+  });
 }
 
+
+
+
+
+
+}

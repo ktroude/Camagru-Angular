@@ -1,11 +1,14 @@
 package io.ktroude.camagru.Authentication;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.ktroude.camagru.Authentication.DTO.LoginDTO;
 import io.ktroude.camagru.Authentication.DTO.RegistrationDTO;
@@ -25,11 +28,9 @@ public class AuthController {
         return authService.registerUser(data.getUsername(), data.getEmail(), data.getPassword());
     }
 
-
     @PostMapping("/login")
-    public String loginUser(@RequestBody LoginDTO data, HttpServletResponse response) {
+    public ResponseEntity<String> loginUser(@RequestBody LoginDTO data, HttpServletResponse response) throws JsonProcessingException {
         return authService.loginUser(data.getUsername(), data.getPassword(), response);
     }
     
-
 }

@@ -46,7 +46,7 @@ import { TokenService } from "src/app/services/token.service";
           <p class="form_error" *ngIf="password.errors && password.errors['minlengt'] && f.submitted">Password must be at least 8 characters</p>
           <button>Login</button>
           <a (click)="redirect('/auth/recover')">Password forgot?</a>
-          <p class="form_error" *ngIf="match === false">
+          <p class="form_error" *ngIf="match === false" style="margin-top: 100px;">
             Username or password incorect !
           </p>
         </form>
@@ -82,11 +82,14 @@ export class LoginComponent {
 onSubmit() {
   console.log(this.form);
   this.authService.login(this.form).subscribe({
-    next: (data:Token) => {
-      if (data.access_token) {
-        this.tokenService.saveToken(data.access_token);
-        console.log(data.access_token);
-        this.router.navigate(['user'])
+    next: (data: Token) => {
+      if (data.token) {
+        this.match = true;
+        this.tokenService.saveToken(data.token);
+        this.router.navigate([''])
+      }
+      else {
+        this.match = false;
       }
     },
     error: (err: any) => {

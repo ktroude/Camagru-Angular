@@ -1,5 +1,5 @@
 export interface Token {
-    access_token: string
+    token: string
 }
 
 export interface Credentials{

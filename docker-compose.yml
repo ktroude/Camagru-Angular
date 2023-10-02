@@ -16,6 +16,8 @@ services:
     depends_on:
       database:
         condition: service_healthy
+    volumes:
+      - ./camagru:/app
     networks:
       - camagru
 
@@ -39,7 +41,6 @@ services:
     networks:
       - camagru
 
-
   frontend:
     container_name: frontend
     build:
@@ -47,8 +48,8 @@ services:
       dockerfile: ./frontend/Dockerfile
     ports:
       - 4200:4200
-    depends_on:
-      - backend
+    volumes:
+      - ./frontend:/src/app
     networks:
       - camagru
 

@@ -46,7 +46,6 @@ public class AppUser implements UserDetails {
     )
     private Set<Role> authorities;
 
-
     public AppUser(){
         super();
         this.authorities = new HashSet<Role>();

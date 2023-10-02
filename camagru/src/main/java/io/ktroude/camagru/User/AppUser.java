@@ -7,6 +7,8 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.ktroude.camagru.Role.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +35,7 @@ public class AppUser implements UserDetails {
 
     @Column(unique = true)
     private String email;
+    @JsonIgnore
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

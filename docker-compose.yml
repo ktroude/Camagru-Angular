@@ -2,31 +2,59 @@ version: '3.9'
 
 services:
 
-  # java_app:
-  #   container_name: java_app
-  #   image: ktroude/java_app:1.0.0
-  #   build: ./
-  #   ports:
-  #     - 8080:8080
-  #   environment:
-  #     - DATABASE_URL=jdbc:postgresql://java_db:5432/postgres
-  #     - DATABASE_USERNAME=postgres
-  #     - DATABASE_PASSWORD=postgres
-  #   depends_on:
-  #     - java_db
+  backend:
+    container_name: backend
+    build:
+      context: ./
+      dockerfile: ./camagru/Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - DATABASE_URL=jdbc:postgresql://database:5432/postgres
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=postgres
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - camagru
 
 
-  java_db:
-    container_name: java_db
+  database:
+    container_name: database
     image: postgres:12
     ports:
       - 5432:5432
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    networks:
+      - camagru
+
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - 4200:4200
+    depends_on:
+      - backend
+    networks:
+      - camagru
+
+
+networks:
+  camagru:
 
 volumes:
   pgdata: {}

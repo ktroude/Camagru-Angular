@@ -18,7 +18,6 @@ import io.ktroude.camagru.Role.Role;
 import io.ktroude.camagru.Role.RoleRepository;
 import io.ktroude.camagru.User.AppUser;
 import io.ktroude.camagru.User.UserRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -55,19 +54,6 @@ public class AuthService {
         return null;
     }
 }
-
-    public String logoutUser(HttpServletResponse response) {
-        Cookie cookie = new Cookie("jwt-token", "");
-        cookie.setPath("/logout");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-
-        return "redirect:/login";
-    }
-
-
-
 
 
 

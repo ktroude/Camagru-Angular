@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.ktroude.camagru.Authentication.DTO.LoginDTO;
 import io.ktroude.camagru.Authentication.DTO.RegistrationDTO;
 import io.ktroude.camagru.User.AppUser;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -27,13 +27,9 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public String loginUser(@RequestBody RegistrationDTO data, HttpServletResponse response) {
+    public String loginUser(@RequestBody LoginDTO data, HttpServletResponse response) {
         return authService.loginUser(data.getUsername(), data.getPassword(), response);
     }
     
 
-    @RequestMapping("/logout")
-    public String logoutUser(HttpServletRequest request, HttpServletResponse response) {
-        return authService.logoutUser(response);
-    }
 }

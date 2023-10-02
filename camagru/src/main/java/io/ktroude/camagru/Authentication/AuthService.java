@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import io.ktroude.camagru.Authentication.DTO.LoginResponseDTO;
 import io.ktroude.camagru.Authentication.token.TokenService;
 import io.ktroude.camagru.Role.Role;
 import io.ktroude.camagru.Role.RoleRepository;
@@ -45,23 +44,15 @@ public class AuthService {
         return userRepository.save(new AppUser(0, username, email, encodedPassword, authorities));
     }
 
-    public LoginResponseDTO loginUser(String username, String password, HttpServletResponse response) {
+    public String loginUser(String username, String password, HttpServletResponse response) {
     try {
         Authentication auth = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(username, password)
         );
         String token = tokenService.generateJwt(auth);
-        
-        Cookie cookie = new Cookie("jwt-token", token);
-        cookie.setPath("/");
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(3600*24);
-        response.addCookie(cookie);
-
-        AppUser user = userRepository.findByUsername(username).orElse(null);
-        return new LoginResponseDTO(user);
+        return token;
     } catch (AuthenticationException e) {
-        return new LoginResponseDTO(null);
+        return null;
     }
 }
 

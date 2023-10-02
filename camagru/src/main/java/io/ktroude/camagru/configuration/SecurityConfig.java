@@ -54,14 +54,17 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(crsf -> crsf.disable())
+            .authorizeHttpRequests(auth -> {
+                auth.requestMatchers("/auth/**").permitAll();
+                auth.requestMatchers("/admin/**").hasRole("ADMIN");
+                auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
+
+                auth.anyRequest().authenticated();
+            })
             .oauth2ResourceServer(oauth -> oauth
             .jwt(jwt -> jwt
             .jwtAuthenticationConverter(jwtAuthenticationConverter())))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> {
-                auth.requestMatchers("/auth/**").permitAll();
-                auth.anyRequest().authenticated();
-            });
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
     }
 
@@ -82,7 +85,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
+        jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("role");
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);

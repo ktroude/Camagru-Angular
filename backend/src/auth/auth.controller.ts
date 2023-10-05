@@ -1,9 +1,9 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { signinLocalDTO, signupLocalDTO } from './DTO';
 import { Response } from 'express';
 import { RefreshTokenGuard } from 'src/common/guards';
-import { GetCurrentUser, GetCurrentUserId, Public } from 'src/common/decorators';
+import { GetCurrentUserId, Public } from 'src/common/decorators';
 import { GetRefreshToken } from 'src/common/decorators/getRefreshToken.decorator';
 
 @Controller('auth')

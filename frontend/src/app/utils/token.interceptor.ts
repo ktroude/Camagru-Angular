@@ -22,13 +22,12 @@ export class TokenInterceptor implements HttpInterceptor {
       });
       return next.handle(clone).pipe(
         catchError(error => {
-          console.log(error);
-
           if (error.status === 401) {
             this.tokenService.clearToken();
             // ajouter le refresh token ici (et dans this.tokenService)
+            return throwError(() => new Error('Session Expired'));
           }
-          return throwError(() => new Error('Session Expired'));
+          return next.handle(request);
         })
       );
     }

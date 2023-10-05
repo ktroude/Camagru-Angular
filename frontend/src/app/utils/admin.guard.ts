@@ -7,8 +7,8 @@ export const adminGuard: CanActivateFn = (route:ActivatedRouteSnapshot, state:Ro
     const tokenService: TokenService = inject(TokenService);
 
     if (tokenService.isLogged())
-      return router.navigate(['admin']);
-    return true;
+      return true;
+    return false; 
 };
 
 // a implementer : checker les cookies, checker le jwt, checker le status du mec

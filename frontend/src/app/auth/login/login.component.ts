@@ -73,6 +73,7 @@ export class LoginComponent {
     private router: Router,
     private authService: AuthService,
     private tokenService: TokenService,
+    private httpClient: HttpClient
     ) {}
 
   redirect(path: string) {
@@ -80,10 +81,9 @@ export class LoginComponent {
   }
 
 onSubmit() {
-  console.log(this.form);
   this.authService.login(this.form).subscribe({
     next: (data: Token) => {
-      if (data.token) {
+       if (data.token) {
         this.match = true;
         this.tokenService.saveToken(data.token);
         this.router.navigate([''])
@@ -98,10 +98,6 @@ onSubmit() {
     }
   });
 }
-
-
-
-
 
 
 }

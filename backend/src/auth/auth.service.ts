@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   HttpException,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { signinLocalDTO, signupLocalDTO } from './DTO';
@@ -48,13 +49,15 @@ export class AuthService {
   }
 
   async signinLocal(dto: signinLocalDTO, res: Response): Promise<Response> {
-    let user = await this.prismaService.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!user) {
-      user = await this.prismaService.user.findUnique({
+    try {
+      
+      let user = await this.prismaService.user.findUnique({
+        where: {
+          email: dto.email,
+        },
+      });
+      if (!user) {
+        user = await this.prismaService.user.findUnique({
         where: {
           username: dto.email,
         },
@@ -66,16 +69,19 @@ export class AuthService {
     const passwordMatches: boolean = await bcrypt.compare(
       dto.password,
       user.password,
-    );
-    if (!passwordMatches) {
-      throw new ForbiddenException('Access denied');
+      );
+      if (!passwordMatches) {
+        throw new ForbiddenException('Access denied');
+      }
+      const tokens = await this.getTokens(user.id, user.username, user.role);
+      await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
+      res.cookie('access_token', tokens.access_token, { httpOnly: true });
+      res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true });
+      return res.status(200).send();
+    } catch {
+      throw new NotFoundException('This user does not exist in database');
     }
-    const tokens = await this.getTokens(user.id, user.username, user.role);
-    await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
-    res.cookie('access_token', tokens.access_token, { httpOnly: true });
-    res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true });
-    return res.status(200).send();;
-  }
+    }
 
   async logout(userId: number, res: Response) {
     await this.prismaService.user.updateMany({

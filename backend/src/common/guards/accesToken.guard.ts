@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
+import { GetCurrentUser } from '../decorators';
 
 @Injectable()
 export class AccessTokenGuard extends AuthGuard('jwt') {

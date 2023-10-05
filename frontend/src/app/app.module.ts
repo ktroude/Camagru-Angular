@@ -10,9 +10,9 @@ import { TokenInterceptorProvider } from './utils/token.interceptor';
     AppComponent,
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
   ],
   providers: [TokenInterceptorProvider],
   bootstrap: [AppComponent]

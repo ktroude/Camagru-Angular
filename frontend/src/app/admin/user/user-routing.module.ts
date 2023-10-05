@@ -6,7 +6,8 @@ import { UserAddComponent } from './user-add/user-add.component';
 import { UserDeleteComponent } from './user-delete/user-delete.component';
 
 const routes: Routes = [
-  {path: '', component:UserIndexComponent},
+  {path: '', redirectTo:'index', pathMatch:'full'},
+  {path: 'index', component:UserIndexComponent},
   {path:'edit/:id', component:UserEditComponent},
   {path:'add', component:UserAddComponent}, 
   {path:'delete/:id', component:UserDeleteComponent}

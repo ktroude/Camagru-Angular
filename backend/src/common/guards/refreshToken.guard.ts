@@ -13,7 +13,6 @@ export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
     const request = context.switchToHttp().getRequest<Request>();
     const refreshToken = request.cookies['refresh_token'];
 
-    console.log('token == ', refreshToken)
     if (!refreshToken) {
       return false;
     }

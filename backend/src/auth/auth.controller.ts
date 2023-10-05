@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { signinLocalDTO, signupLocalDTO } from './DTO';
+import { EmailDTO, signinLocalDTO, signupLocalDTO } from './DTO';
 import { Response } from 'express';
 import { RefreshTokenGuard } from 'src/common/guards';
 import { GetCurrentUserId, Public } from 'src/common/decorators';
@@ -36,6 +36,12 @@ export class AuthController {
     refreshTokens(@GetCurrentUserId() userId: number, @GetRefreshToken() refreshToken:string, @Res() res:Response){
         console.log(refreshToken)
         return this.authService.refreshTokens(userId, refreshToken, res);
+    }
+
+    @Post('recover/send/email')
+    @Public()
+    sendEmailForgotPassword(@Body() email: EmailDTO) {
+        return this.authService.sendEmailForgotPassword(email);
     }
 
 }

@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { signinLocalDTO, signupLocalDTO } from './DTO';
+import { EmailDTO, signinLocalDTO, signupLocalDTO } from './DTO';
 import * as bcrypt from 'bcryptjs';
 import { Tokens } from './types';
 import { JwtService } from '@nestjs/jwt';
@@ -107,7 +107,7 @@ export class AuthService {
       },
     });
     if (!user || !user.hashedRefreshToken) {
-      throw new ForbiddenException('Access denied');
+      throw new NotFoundException('User or his refresh token does not exist');
     }
     const matches = bcrypt.compare(refreshToken, user.hashedRefreshToken);
     if (!matches) {
@@ -119,6 +119,18 @@ export class AuthService {
     res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true });
     return res.status(200).send();;
   }
+
+  async sendEmailForgotPassword(data:EmailDTO) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email: data.email,
+      }
+    });
+    if (!user)
+      throw new NotFoundException('User or does not exist');
+  }
+
+// UTILS
 
   async hashData(data: string) {
     return await bcrypt.hash(data, 10);
@@ -169,5 +181,9 @@ export class AuthService {
         hashedRefreshToken: hash,
       },
     });
+  }
+
+  createForgottenPasswordToken() {
+    
   }
 }

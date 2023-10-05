@@ -14,10 +14,14 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = require("bcryptjs");
 const jwt_1 = require("@nestjs/jwt");
+const mails_service_1 = require("../mails/mails.service");
+const config_1 = require("@nestjs/config");
 let AuthService = class AuthService {
-    constructor(prismaService, jwtService) {
+    constructor(prismaService, jwtService, mailsService, configService) {
         this.prismaService = prismaService;
         this.jwtService = jwtService;
+        this.mailsService = mailsService;
+        this.configService = configService;
     }
     async signupLocal(dto, res) {
         try {
@@ -35,8 +39,18 @@ let AuthService = class AuthService {
             await this.updateRefreshTokenHash(newUser.id, tokens.refresh_token);
             res.cookie('access_token', tokens.access_token, { httpOnly: true });
             res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true });
+            const mailToken = await this.createToken({ email: newUser.email }, {
+                secret: this.configService.get('SENGRID_JWT_SECRET'),
+                expiresIn: 60 * 60,
+            });
+            const url = `http://localhost:8080/auth/confirm/${mailToken}`;
+            const html = `<p> Click <a href= "${url}"> here </a> to confirm email</p>`;
+            await this.mailsService.sendMail({
+                html,
+                to: newUser.email,
+                subject: 'Confirm your email',
+            });
             return res.status(201).send();
-            ;
         }
         catch {
             throw new common_1.HttpException('Username or email already taken', common_1.HttpStatus.CONFLICT);
@@ -88,7 +102,6 @@ let AuthService = class AuthService {
         res.clearCookie('access_token');
         res.clearCookie('refresh_token');
         return res.status(200).send();
-        ;
     }
     async refreshTokens(userId, refreshToken, res) {
         const user = await this.prismaService.user.findUnique({
@@ -108,13 +121,43 @@ let AuthService = class AuthService {
         res.cookie('access_token', tokens.access_token, { httpOnly: true });
         res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true });
         return res.status(200).send();
-        ;
+    }
+    async confirmEmail(token) {
+        const match = this.jwtService.verify(token, {
+            secret: this.configService.get('SENGRID_JWT_SECRET'),
+        });
+        if (!match ||
+            typeof match !== 'object' ||
+            !match.email ||
+            typeof match.email !== 'string') {
+            throw new common_1.UnauthorizedException('Access denied');
+        }
+        try {
+            const user = await this.prismaService.user.findUnique({
+                where: {
+                    email: match.email,
+                },
+            });
+            if (!user)
+                throw new common_1.NotFoundException('User does not exist');
+            await this.prismaService.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    isEmailConfirmed: true,
+                },
+            });
+        }
+        catch {
+            throw new common_1.UnauthorizedException('Access denied');
+        }
     }
     async sendEmailForgotPassword(data) {
         const user = await this.prismaService.user.findUnique({
             where: {
                 email: data.email,
-            }
+            },
         });
         if (!user)
             throw new common_1.NotFoundException('User or does not exist');
@@ -123,21 +166,18 @@ let AuthService = class AuthService {
         return await bcrypt.hash(data, 10);
     }
     async getTokens(userId, username, role) {
+        const data = {
+            sub: userId,
+            username,
+            role,
+        };
         const [accessT, refreshT] = await Promise.all([
-            this.jwtService.signAsync({
-                sub: userId,
-                username,
-                role,
-            }, {
-                secret: 'password',
+            this.createToken(data, {
+                secret: this.configService.get('ACCESS_TOKEN_SECRET'),
                 expiresIn: 60 * 15,
             }),
-            this.jwtService.signAsync({
-                sub: userId,
-                username,
-                role,
-            }, {
-                secret: 'password',
+            this.createToken(data, {
+                secret: this.configService.get('REFRESH_TOKEN_SECRET'),
                 expiresIn: 60 * 60 * 24 * 7,
             }),
         ]);
@@ -157,13 +197,17 @@ let AuthService = class AuthService {
             },
         });
     }
-    createForgottenPasswordToken() {
+    async createToken(payload, option) {
+        return await this.jwtService.signAsync(payload, option);
     }
+    createForgottenPasswordToken() { }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        mails_service_1.MailsService,
+        config_1.ConfigService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

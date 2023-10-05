@@ -16,6 +16,7 @@ export declare class UserService {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     updatePassword(userId: number, data: PasswordDto): Promise<{
         id: number;
@@ -27,6 +28,7 @@ export declare class UserService {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     updatePseudo(userId: number, data: PseudoDto): Promise<{
         id: number;
@@ -38,6 +40,7 @@ export declare class UserService {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     hashData(data: string): Promise<string>;
 }

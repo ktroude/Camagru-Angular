@@ -53,6 +53,7 @@ let UserService = class UserService {
                 },
                 data: {
                     email: data.email,
+                    isEmailConfirmed: false
                 },
             });
         }

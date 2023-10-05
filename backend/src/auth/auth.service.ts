@@ -4,19 +4,25 @@ import {
   HttpException,
   HttpStatus,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { EmailDTO, signinLocalDTO, signupLocalDTO } from './DTO';
 import * as bcrypt from 'bcryptjs';
 import { Tokens } from './types';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { Response } from 'express';
+import { MailsService } from 'src/mails/mails.service';
+import { ConfigService } from '@nestjs/config';
+import { MailInput } from 'src/mails/types';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private prismaService: PrismaService,
-    private jwtService: JwtService,
+    private readonly prismaService: PrismaService,
+    private readonly jwtService: JwtService,
+    private readonly mailsService: MailsService,
+    private readonly configService: ConfigService,
   ) {}
 
   async signupLocal(dto: signupLocalDTO, res: Response): Promise<Response> {
@@ -39,7 +45,23 @@ export class AuthService {
       await this.updateRefreshTokenHash(newUser.id, tokens.refresh_token);
       res.cookie('access_token', tokens.access_token, { httpOnly: true });
       res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true });
-      return res.status(201).send();;
+
+      const mailToken = await this.createToken(
+        { email: newUser.email },
+        {
+          secret: this.configService.get('SENGRID_JWT_SECRET'),
+          expiresIn: 60 * 60,
+        },
+      );
+      const url = `http://localhost:8080/auth/confirm/${mailToken}`;
+      const html = `<p> Click <a href= "${url}"> here </a> to confirm email</p>`;
+      await this.mailsService.sendMail({
+        html,
+        to: newUser.email,
+        subject: 'Confirm your email',
+      });
+
+      return res.status(201).send();
     } catch {
       throw new HttpException(
         'Username or email already taken',
@@ -50,7 +72,6 @@ export class AuthService {
 
   async signinLocal(dto: signinLocalDTO, res: Response): Promise<Response> {
     try {
-      
       let user = await this.prismaService.user.findUnique({
         where: {
           email: dto.email,
@@ -58,17 +79,17 @@ export class AuthService {
       });
       if (!user) {
         user = await this.prismaService.user.findUnique({
-        where: {
-          username: dto.email,
-        },
-      });
-    }
-    if (!user) {
-      throw new ForbiddenException('Access denied');
-    }
-    const passwordMatches: boolean = await bcrypt.compare(
-      dto.password,
-      user.password,
+          where: {
+            username: dto.email,
+          },
+        });
+      }
+      if (!user) {
+        throw new ForbiddenException('Access denied');
+      }
+      const passwordMatches: boolean = await bcrypt.compare(
+        dto.password,
+        user.password,
       );
       if (!passwordMatches) {
         throw new ForbiddenException('Access denied');
@@ -81,7 +102,7 @@ export class AuthService {
     } catch {
       throw new NotFoundException('This user does not exist in database');
     }
-    }
+  }
 
   async logout(userId: number, res: Response) {
     await this.prismaService.user.updateMany({
@@ -97,10 +118,14 @@ export class AuthService {
     });
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
-    return res.status(200).send();;
+    return res.status(200).send();
   }
 
-  async refreshTokens(userId: number, refreshToken: string, res:Response): Promise<Response> {
+  async refreshTokens(
+    userId: number,
+    refreshToken: string,
+    res: Response,
+  ): Promise<Response> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
@@ -117,53 +142,75 @@ export class AuthService {
     await this.updateRefreshTokenHash(user.id, tokens.refresh_token);
     res.cookie('access_token', tokens.access_token, { httpOnly: true });
     res.cookie('refresh_token', tokens.refresh_token, { httpOnly: true });
-    return res.status(200).send();;
+    return res.status(200).send();
   }
 
-  async sendEmailForgotPassword(data:EmailDTO) {
+  async confirmEmail(token: string) {
+    const match = this.jwtService.verify(token, {
+      secret: this.configService.get('SENGRID_JWT_SECRET'),
+    });
+    if (
+      !match ||
+      typeof match !== 'object' ||
+      !match.email ||
+      typeof match.email !== 'string'
+    ) {
+      throw new UnauthorizedException('Access denied');
+    }
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          email: match.email,
+        },
+      });
+      if (!user) throw new NotFoundException('User does not exist');
+      await this.prismaService.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          isEmailConfirmed: true,
+        },
+      });
+    } catch {
+      throw new UnauthorizedException('Access denied');
+    }
+  }
+
+  async sendEmailForgotPassword(data: EmailDTO) {
     const user = await this.prismaService.user.findUnique({
       where: {
         email: data.email,
-      }
+      },
     });
-    if (!user)
-      throw new NotFoundException('User or does not exist');
+    if (!user) throw new NotFoundException('User or does not exist');
   }
 
-// UTILS
+  // UTILS
 
-  async hashData(data: string) {
+  private async hashData(data: string) {
     return await bcrypt.hash(data, 10);
   }
 
-  async getTokens(
+  private async getTokens(
     userId: number,
     username: string,
     role: string,
   ): Promise<Tokens> {
+    const data = {
+      sub: userId,
+      username,
+      role,
+    };
     const [accessT, refreshT] = await Promise.all([
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-          username,
-          role,
-        },
-        {
-          secret: 'password',
-          expiresIn: 60 * 15,
-        },
-      ),
-      this.jwtService.signAsync(
-        {
-          sub: userId,
-          username,
-          role,
-        },
-        {
-          secret: 'password',
-          expiresIn: 60 * 60 * 24 * 7,
-        },
-      ),
+      this.createToken(data, {
+        secret: this.configService.get('ACCESS_TOKEN_SECRET'),
+        expiresIn: 60 * 15,
+      }),
+      this.createToken(data, {
+        secret: this.configService.get('REFRESH_TOKEN_SECRET'),
+        expiresIn: 60 * 60 * 24 * 7,
+      }),
     ]);
     return {
       access_token: accessT,
@@ -171,7 +218,7 @@ export class AuthService {
     };
   }
 
-  async updateRefreshTokenHash(userId: number, refreshToken: string) {
+  private async updateRefreshTokenHash(userId: number, refreshToken: string) {
     const hash = await this.hashData(refreshToken);
     await this.prismaService.user.update({
       where: {
@@ -183,7 +230,9 @@ export class AuthService {
     });
   }
 
-  createForgottenPasswordToken() {
-    
+  private async createToken(payload: object | Buffer, option?: JwtSignOptions) {
+    return await this.jwtService.signAsync(payload, option);
   }
+
+  createForgottenPasswordToken() {}
 }

@@ -14,10 +14,12 @@ const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const core_1 = require("@nestjs/core");
 const jwt = require("jsonwebtoken");
+const config_1 = require("@nestjs/config");
 let AccessTokenGuard = class AccessTokenGuard extends (0, passport_1.AuthGuard)('jwt') {
-    constructor(reflector) {
+    constructor(reflector, configService) {
         super();
         this.reflector = reflector;
+        this.configService = configService;
     }
     canActivate(context) {
         const isPublic = this.reflector.getAllAndOverride('isPublic', [
@@ -33,7 +35,7 @@ let AccessTokenGuard = class AccessTokenGuard extends (0, passport_1.AuthGuard)(
             return false;
         }
         try {
-            const decodedToken = jwt.verify(accessToken, 'password');
+            const decodedToken = jwt.verify(accessToken, this.configService.get('ACCESS_TOKEN_SECRET'));
             request.user = decodedToken;
             return true;
         }
@@ -45,6 +47,6 @@ let AccessTokenGuard = class AccessTokenGuard extends (0, passport_1.AuthGuard)(
 exports.AccessTokenGuard = AccessTokenGuard;
 exports.AccessTokenGuard = AccessTokenGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [core_1.Reflector])
+    __metadata("design:paramtypes", [core_1.Reflector, config_1.ConfigService])
 ], AccessTokenGuard);
 //# sourceMappingURL=accesToken.guard.js.map

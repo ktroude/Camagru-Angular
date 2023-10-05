@@ -1,13 +1,15 @@
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { Request } from 'express'
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
-
+    
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: 'password',
+            secretOrKey: process.env.REFRESH_TOKEN_SECRET,
             passReqToCallback: true,
         });
     }

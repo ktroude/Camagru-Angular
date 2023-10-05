@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RefreshTokenGuard = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const passport_1 = require("@nestjs/passport");
 const jwt = require("jsonwebtoken");
 let RefreshTokenGuard = class RefreshTokenGuard extends (0, passport_1.AuthGuard)('jwt-refresh') {
-    constructor() {
+    constructor(configService) {
         super();
+        this.configService = configService;
     }
     canActivate(context) {
         const request = context.switchToHttp().getRequest();
@@ -24,8 +26,7 @@ let RefreshTokenGuard = class RefreshTokenGuard extends (0, passport_1.AuthGuard
             return false;
         }
         try {
-            const decodedToken = jwt.verify(refreshToken, 'password');
-            console.log('decode == ', decodedToken);
+            const decodedToken = jwt.verify(refreshToken, this.configService.get('REFRESH_TOKEN_SECRET'));
             request.user = decodedToken;
             return true;
         }
@@ -38,6 +39,6 @@ let RefreshTokenGuard = class RefreshTokenGuard extends (0, passport_1.AuthGuard
 exports.RefreshTokenGuard = RefreshTokenGuard;
 exports.RefreshTokenGuard = RefreshTokenGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [config_1.ConfigService])
 ], RefreshTokenGuard);
 //# sourceMappingURL=refreshToken.guard.js.map

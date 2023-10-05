@@ -12,12 +12,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailsService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-const sendgrindMail = require("@sendgrind/mail");
+const sendgrindMail = require("@sendgrid/mail");
 let MailsService = class MailsService {
     constructor(configService) {
         this.configService = configService;
-        sendgrindMail.
-        ;
+        sendgrindMail.setApiKey(configService.get('SENDGRID_API_KEY'));
+    }
+    async sendMail(input) {
+        await sendgrindMail.send({
+            from: this.configService.get('SENDGRID_FROM'),
+            to: input.to,
+            subject: input.subject,
+            html: input.html
+        });
     }
 };
 exports.MailsService = MailsService;

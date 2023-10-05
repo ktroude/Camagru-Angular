@@ -11,11 +11,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminGuard = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
 const passport_1 = require("@nestjs/passport");
 const jwt = require("jsonwebtoken");
 let AdminGuard = class AdminGuard extends (0, passport_1.AuthGuard)('jwt') {
-    constructor() {
+    constructor(configService) {
         super();
+        this.configService = configService;
     }
     canActivate(context) {
         const request = context.switchToHttp().getRequest();
@@ -24,7 +26,7 @@ let AdminGuard = class AdminGuard extends (0, passport_1.AuthGuard)('jwt') {
             return false;
         }
         try {
-            const decodedToken = jwt.verify(accessToken, 'password');
+            const decodedToken = jwt.verify(accessToken, this.configService.get('ACCESS_TOKEN_SECRET'));
             request.user = decodedToken;
             const role = decodedToken['role'];
             if (!role || role != 'ADMIN')
@@ -39,6 +41,6 @@ let AdminGuard = class AdminGuard extends (0, passport_1.AuthGuard)('jwt') {
 exports.AdminGuard = AdminGuard;
 exports.AdminGuard = AdminGuard = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
+    __metadata("design:paramtypes", [config_1.ConfigService])
 ], AdminGuard);
 //# sourceMappingURL=admin.guard.js.map

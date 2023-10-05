@@ -8,5 +8,6 @@ export declare class AuthController {
     signinLocal(dto: signinLocalDTO, res: Response): Promise<Response>;
     logout(userId: number, res: Response): Promise<Response<any, Record<string, any>>>;
     refreshTokens(userId: number, refreshToken: string, res: Response): Promise<Response<any, Record<string, any>>>;
+    confirmEmail(token: string): Promise<void>;
     sendEmailForgotPassword(email: EmailDTO): Promise<void>;
 }

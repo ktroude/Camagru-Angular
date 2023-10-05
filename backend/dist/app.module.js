@@ -13,22 +13,21 @@ const prisma_module_1 = require("./prisma/prisma.module");
 const guards_1 = require("./common/guards");
 const core_1 = require("@nestjs/core");
 const user_module_1 = require("./user/user.module");
-const mails_controller_1 = require("./mails/mails.controller");
-const mails_service_1 = require("./mails/mails.service");
 const mails_module_1 = require("./mails/mails.module");
+const config_1 = require("@nestjs/config");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [auth_module_1.AuthModule, prisma_module_1.PrismaModule, user_module_1.UserModule, mails_module_1.MailsModule],
-        controllers: [mails_controller_1.MailsController],
+        controllers: [],
         providers: [
             {
                 provide: core_1.APP_GUARD,
                 useClass: guards_1.AccessTokenGuard,
             },
-            mails_service_1.MailsService,
+            config_1.ConfigService
         ],
     })
 ], AppModule);

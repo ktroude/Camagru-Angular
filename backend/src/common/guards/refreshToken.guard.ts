@@ -1,11 +1,12 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
-  constructor() {
+  constructor(private readonly configService:ConfigService) {
     super();
   }
 
@@ -18,8 +19,7 @@ export class RefreshTokenGuard extends AuthGuard('jwt-refresh') {
     }
 
     try {
-      const decodedToken = jwt.verify(refreshToken, 'password');
-      console.log('decode == ', decodedToken)
+      const decodedToken = jwt.verify(refreshToken, this.configService.get('REFRESH_TOKEN_SECRET'));
       request.user = decodedToken;
       return true;
     } catch (error) {

@@ -3,11 +3,11 @@ import { AuthGuard } from '@nestjs/passport';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { GetCurrentUser } from '../decorators';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AccessTokenGuard extends AuthGuard('jwt') {
-  constructor(private reflector: Reflector) {
+  constructor(private reflector: Reflector, private readonly configService:ConfigService) {
     super();
   }
 
@@ -29,7 +29,7 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     }
 
     try {
-      const decodedToken = jwt.verify(accessToken, 'password');
+      const decodedToken = jwt.verify(accessToken, this.configService.get('ACCESS_TOKEN_SECRET'));
       request.user = decodedToken;
       return true;
     } catch (error) {

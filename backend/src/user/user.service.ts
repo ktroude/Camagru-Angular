@@ -49,6 +49,7 @@ export class UserService {
         },
         data: {
           email: data.email,
+          isEmailConfirmed: false
         },
       });
     } catch {

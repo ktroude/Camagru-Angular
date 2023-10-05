@@ -1,5 +1,7 @@
 import { ConfigService } from '@nestjs/config';
+import { MailInput } from './types';
 export declare class MailsService {
-    private configService;
+    private readonly configService;
     constructor(configService: ConfigService);
+    sendMail(input: MailInput): Promise<void>;
 }

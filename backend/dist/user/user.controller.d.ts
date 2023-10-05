@@ -17,6 +17,7 @@ export declare class UserController {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     updatePassword(userId: number, data: PasswordDto): Promise<{
         id: number;
@@ -28,6 +29,7 @@ export declare class UserController {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     updatePseudo(userId: number, data: PseudoDto): Promise<{
         id: number;
@@ -39,6 +41,7 @@ export declare class UserController {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     getAllUsers(): Promise<User[]>;
     updateEmailByAdmin(userId: number, data: EmailDto): Promise<{
@@ -51,6 +54,7 @@ export declare class UserController {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     updatePasswordByAdmin(userId: number, data: PasswordDto): Promise<{
         id: number;
@@ -62,6 +66,7 @@ export declare class UserController {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     updatePseudoByAdmin(userId: number, data: PseudoDto): Promise<{
         id: number;
@@ -73,6 +78,7 @@ export declare class UserController {
         password: string;
         role: string;
         hashedRefreshToken: string;
+        isEmailConfirmed: boolean;
     }>;
     data: any;
 }

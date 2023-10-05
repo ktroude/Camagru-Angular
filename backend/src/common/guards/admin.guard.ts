@@ -1,11 +1,12 @@
 import { Injectable, ExecutionContext } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AdminGuard extends AuthGuard('jwt') {
-  constructor() {
+  constructor(private readonly configService:ConfigService) {
     super();
   }
 
@@ -18,7 +19,7 @@ export class AdminGuard extends AuthGuard('jwt') {
     }
 
     try {
-      const decodedToken = jwt.verify(accessToken, 'password');
+      const decodedToken = jwt.verify(accessToken, this.configService.get('ACCESS_TOKEN_SECRET'));
       request.user = decodedToken;
       const role = decodedToken['role'];
       if (!role || role != 'ADMIN')

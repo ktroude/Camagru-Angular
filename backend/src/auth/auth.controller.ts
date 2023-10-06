@@ -1,53 +1,94 @@
-import { Body, Controller, Post, Res, UseGuards, Param, Get } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Res,
+  UseGuards,
+  Param,
+  Get,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { EmailDTO, signinLocalDTO, signupLocalDTO } from './DTO';
 import { Response } from 'express';
-import { RefreshTokenGuard } from 'src/common/guards';
+import { AdminGuard, RefreshTokenGuard } from 'src/common/guards';
 import { GetCurrentUserId, Public } from 'src/common/decorators';
 import { GetRefreshToken } from 'src/common/decorators/getRefreshToken.decorator';
+import { PasswordDto } from 'src/user/dto';
 
 @Controller('auth')
 export class AuthController {
+  constructor(private authService: AuthService) {}
 
-    constructor(
-        private authService:AuthService,
-    ) {}
+  @Public()
+  @Post('local/signup')
+  signupLocal(
+    @Body() dto: signupLocalDTO,
+    @Res() res: Response,
+  ): Promise<Response> {
+    return this.authService.signupLocal(dto, res);
+  }
 
-    @Public()
-    @Post('local/signup')
-    async signupLocal(@Body() dto:signupLocalDTO, @Res() res: Response):Promise<Response> {
-        return await this.authService.signupLocal(dto, res);
-    }
+  @Public()
+  @Post('local/signin')
+  signinLocal(
+    @Body() dto: signinLocalDTO,
+    @Res() res: Response,
+  ): Promise<Response> {
+    return this.authService.signinLocal(dto, res);
+  }
 
-    @Public()
-    @Post('local/signin')
-    signinLocal(@Body() dto:signinLocalDTO, @Res() res: Response): Promise<Response>{
-        return this.authService.signinLocal(dto, res);
-    }
+  @Post('logout')
+  logout(
+    @GetCurrentUserId() userId: number,
+    @Res() res: Response,
+  ): Promise<Response> {
+    return this.authService.logout(userId, res);
+  }
 
-    @Post('logout')
-    logout(@GetCurrentUserId() userId: number, @Res() res:Response){
-        return this.authService.logout(userId, res);
-    }
+  @Post('refresh')
+  @Public()
+  @UseGuards(RefreshTokenGuard)
+  refreshTokens(
+    @GetCurrentUserId() userId: number,
+    @GetRefreshToken() refreshToken: string,
+    @Res() res: Response,
+  ): Promise<Response> {
+    return this.authService.refreshTokens(userId, refreshToken, res);
+  }
 
-    @Post('refresh')
-    @Public()
-    @UseGuards(RefreshTokenGuard)
-    refreshTokens(@GetCurrentUserId() userId: number, @GetRefreshToken() refreshToken:string, @Res() res:Response){
-        console.log(refreshToken)
-        return this.authService.refreshTokens(userId, refreshToken, res);
-    }
+  @Get('confirm/:token')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  confirmEmail(@Param('token') token: string) {
+    return this.authService.confirmEmail(token);
+  }
 
-    @Get('confirm/:token')
-    @Public()
-    confirmEmail(@Param('token') token: string) {
-        return this.authService.confirmEmail(token);
-    }
+  @Post('recover/send/email')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  sendEmailForgotPassword(@Body() email: EmailDTO) {
+    return this.authService.sendEmailForgotPassword(email);
+  }
 
-    @Post('recover/send/email')
-    @Public()
-    sendEmailForgotPassword(@Body() email: EmailDTO) {
-        return this.authService.sendEmailForgotPassword(email);
-    }
+  @Post('recover/password/:token')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  recoverPassword(@Param('token') token:string, @Body() data:PasswordDto) {
+    return this.authService.recoverPassword(token, data);
+  }
 
+  @Get('verifiy/token')
+  @HttpCode(HttpStatus.OK)
+  verifyAccessTokenValidity(): string {
+    return 'Access token is valid';
+  }
+
+  @Post('confirm/admin/:id')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AdminGuard)
+  confirmEmailByAdmin(@Param('id') userId: number) {
+    return this.authService.confirmEmailByAdmin(userId);
+  }
 }

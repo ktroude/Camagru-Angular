@@ -7,10 +7,18 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './types';
 import * as bcrypt from 'bcryptjs';
 import { EmailDto, PasswordDto, PseudoDto } from './dto';
+import { ConfigService } from '@nestjs/config';
+import { MailsService } from 'src/mails/mails.service';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly configService: ConfigService,
+    private readonly mailsService: MailsService,
+    private readonly jwtService: JwtService,
+    ) {}
 
   async getAllUsers(): Promise<User[]> {
     return await this.prismaService.user.findMany({
@@ -49,7 +57,7 @@ export class UserService {
         },
         data: {
           email: data.email,
-          isEmailConfirmed: false
+          isEmailConfirmed: false,
         },
       });
     } catch {
@@ -62,7 +70,7 @@ export class UserService {
   async updatePassword(userId: number, data: PasswordDto) {
     try {
       const hash: string = await this.hashData(data.password);
-      return await this.prismaService.user.update({
+      await this.prismaService.user.update({
         where: {
           id: userId,
         },
@@ -70,9 +78,28 @@ export class UserService {
           password: hash,
         },
       });
+      const updatedUser = await this.prismaService.user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+      const mailToken = await this.createToken(
+        { email: updatedUser.email },
+        {
+          secret: this.configService.get('SENGRID_JWT_SECRET'),
+          expiresIn: 60 * 60,
+        },
+      );
+      const url = `http://localhost:8080/auth/confirm/${mailToken}`;
+      const html = `<p> Click <a href= "${url}"> here </a> to confirm email</p>`;
+      await this.mailsService.sendMail({
+        html,
+        to: updatedUser.email,
+        subject: 'Confirm your email',
+      });
     } catch {
-      throw new BadRequestException(
-        'New password must be a string or user does not exist',
+      throw new NotFoundException(
+        'User does not exist',
       );
     }
   }
@@ -94,7 +121,13 @@ export class UserService {
     }
   }
 
-  async hashData(data: string) {
+  //  UTILS
+
+  private async hashData(data: string) {
     return await bcrypt.hash(data, 10);
+  }
+
+  private async createToken(payload: object | Buffer, option?: JwtSignOptions) {
+    return await this.jwtService.signAsync(payload, option);
   }
 }

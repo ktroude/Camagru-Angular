@@ -15,6 +15,7 @@ import { Response } from 'express';
 import { MailsService } from 'src/mails/mails.service';
 import { ConfigService } from '@nestjs/config';
 import { MailInput } from 'src/mails/types';
+import { PasswordDto } from 'src/user/dto';
 
 @Injectable()
 export class AuthService {
@@ -177,6 +178,21 @@ export class AuthService {
     }
   }
 
+  async confirmEmailByAdmin(userId: number) {
+    try {
+      await this.prismaService.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          isEmailConfirmed: true,
+        },
+      });
+    } catch {
+      throw new NotFoundException('User does not exist');
+    }
+  }
+
   async sendEmailForgotPassword(data: EmailDTO) {
     const user = await this.prismaService.user.findUnique({
       where: {
@@ -184,6 +200,52 @@ export class AuthService {
       },
     });
     if (!user) throw new NotFoundException('User or does not exist');
+    const mailToken = await this.createToken(
+      { email: user.email },
+      {
+        secret: this.configService.get('SENGRID_JWT_SECRET'),
+        expiresIn: 60 * 60,
+      },
+    );
+    const url = `http://localhost:4200/auth/recover/password/${mailToken}`;
+    const html = `<p> Click <a href= "${url}"> here </a> to change your password</p>`;
+    await this.mailsService.sendMail({
+      html,
+      to: user.email,
+      subject: 'Password recover',
+    });
+  }
+
+  async recoverPassword(token: string, data:PasswordDto) {
+    const match = this.jwtService.verify(token, {
+      secret: this.configService.get('SENGRID_JWT_SECRET'),
+    });
+    if (
+      !match ||
+      typeof match !== 'object' ||
+      !match.email ||
+      typeof match.email !== 'string'
+    ) {
+      throw new UnauthorizedException('Access denied');
+    }
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          email: match.email,
+        },
+      });
+      if (!user) throw new NotFoundException('User does not exist');
+      await this.prismaService.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          password: data.password,
+        },
+      });
+    } catch {
+      throw new UnauthorizedException('Access denied');
+    }
   }
 
   // UTILS

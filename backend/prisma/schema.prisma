@@ -27,3 +27,29 @@ model User {
 
   @@map("users")
 }
+
+model Comment {
+  id                  Int @id @default(autoincrement())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  pseudo              String
+  content             String
+  likes               Int
+
+  postId              Int
+  post                Post @relation(fields: [postId], references: [id])
+
+}
+
+model Post {
+  
+  id                  Int @id @default(autoincrement())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  picture             String
+  description         String
+  likes               Int @default(0)
+  comments            Comment[]
+}

@@ -1,19 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PostDTO, commentDTO } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as sharp from 'sharp';
 import { Response } from 'express';
-
-
+import { MailsService } from 'src/mails/mails.service';
 
 @Injectable()
 export class PostService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(
+    private prismaService: PrismaService,
+    private mailsService: MailsService,
+  ) {}
 
   async newPost(file: Express.Multer.File, data: PostDTO, userId: number) {
-    const uploadPath = path.join(__dirname, '..', 'uploads'); // Le dossier 'uploads' doit exister
+    const uploadPath = path.join(__dirname, '..', '../uploads');
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }
@@ -33,8 +39,12 @@ export class PostService {
     try {
       const baseImage = sharp(pictures[0].buffer);
       const dimesions = await baseImage.metadata();
-      const filterImage = sharp(pictures[1].buffer).ensureAlpha().resize({ width: dimesions.width, height: dimesions.height});
-      const compositedImage = await baseImage.composite([{ input: await filterImage.toBuffer(), blend: 'overlay' }]);
+      const filterImage = sharp(pictures[1].buffer)
+        .ensureAlpha()
+        .resize({ width: dimesions.width, height: dimesions.height });
+      const compositedImage = await baseImage.composite([
+        { input: await filterImage.toBuffer(), blend: 'overlay' },
+      ]);
       const imageBuffer = await compositedImage.toBuffer();
       res.setHeader('Content-Type', 'image/png');
       res.status(200).send(imageBuffer);
@@ -44,21 +54,119 @@ export class PostService {
     }
   }
 
-  newComment(userId: number, comment: commentDTO) {}
+  async newComment(userId: number, comment: commentDTO) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user)
+      throw new NotFoundException('This user does not existe in database');
+    const post = await this.prismaService.post.findUnique({
+      where: {
+        id: comment.postId,
+      },
+    });
+    if (!post)
+      throw new NotFoundException('This post does not existe in database');
 
-  newLikeComment(userId: number, commentId: number) {}
+    const newComment = await this.prismaService.comment.create({
+      data: {
+        pseudo: user.pseudo,
+        content: comment.content,
+        postId: post.id,
+      },
+    });
 
-  newLikePost(userId: number, postId: number) {}
+    await this.prismaService.post.update({
+      where: {
+        id: post.id,
+      },
+      data: {
+        comments: {
+          connect: {
+            id: newComment.id,
+          },
+        },
+      },
+    });
+    await this.sendMail(post.userId, 'comment');
+  }
+
+  async newLikePost(userId: number, postId: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user)
+      throw new NotFoundException('This user does not existe in database');
+    const post = await this.prismaService.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+    if (!post)
+      throw new NotFoundException('This post does not existe in database');
+    const newLike = await this.prismaService.like.create({
+      data:{
+        userId: user.id,
+        postId: post.id
+      }
+    });
+    await this.prismaService.post.update({
+      where: {
+        id: post.id,
+      },
+      data: {
+        likes : {
+          connect: {
+            id: newLike.id
+          }
+        }
+      }
+    });
+    await this.sendMail(post.userId, "like");
+  }
+
+  async newLikeComment(userId: number, commentId: number) {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user)
+      throw new NotFoundException('This user does not existe in database');
+    const comment = await this.prismaService.comment.findUnique({
+      where: {
+        id: commentId
+      }
+    });
+    if (!comment)
+      throw new NotFoundException('This post does not existe in database');
+    const newLike = await this.prismaService.like.create({
+      data: {
+        userId: user.id,
+        commentId: comment.id
+      }
+    });
+    }
 
   // UTILS
 
-  private async resizeImage(
-    baseImageBuffer: Buffer,
-    overlayImageBuffer: Buffer,
-  ) {
-    try {
-    } catch {
-      throw new BadRequestException('Error while resize image');
-    }
+  private async sendMail(userId: number, theme: string) {
+    //theme = like or comment
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user || user.sendEmail === false) return;
+    const html = `<p>Hey someone ${theme}d your post. Go check out who did it :)</p>`;
+    await this.mailsService.sendMail({
+      html,
+      to: user.email,
+      subject: `New ${theme} on your post`,
+    });
   }
 }

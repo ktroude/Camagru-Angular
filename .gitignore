@@ -1,5 +1,6 @@
 .env
 to-do.txt
+*/uploads/*
 
 # compiled output
 */dist

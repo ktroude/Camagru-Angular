@@ -17,16 +17,14 @@ import { MyFileTypeValidator } from 'src/common/validators/myFileValidator.valid
 import {
   GetCurrentUser,
   GetCurrentUserId,
-  Public,
 } from 'src/common/decorators';
-import { userInfo } from 'os';
 import { Response } from 'express';
 
 @Controller('post')
 export class PostController {
   constructor(private postService: PostService) {}
 
-  @Post('new/post')
+  @Post('new')
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('file'))
   newPost(
@@ -47,7 +45,6 @@ export class PostController {
     return this.postService.newPost(file, data, userId);
   }
 
-  @Public()
   @Post('preview')
   @UseInterceptors(FilesInterceptor('files'))
   preview(
@@ -65,8 +62,6 @@ export class PostController {
     @Res() res: Response,
   ) {
       return this.postService.preview(pictures, res);
-    // res.header('Content-Type', 'image/jpeg');
-    // res.send(this.postService.preview(pictures));
   }
 
   @Post('new/comment')

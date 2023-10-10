@@ -12,45 +12,63 @@ datasource db {
 }
 
 model User {
-  id                  Int @id @default(autoincrement())
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  email               String @unique
-  username            String @unique
-  pseudo              String
-  password            String
-  role                String
-  hashedRefreshToken  String?
+  email              String  @unique
+  username           String  @unique
+  pseudo             String
+  password           String
+  role               String
+  hashedRefreshToken String?
 
-  isEmailConfirmed    Boolean @default(false)
+  isEmailConfirmed Boolean @default(false)
+  sendEmail        Boolean @default(true)
 
   @@map("users")
 }
 
 model Comment {
-  id                  Int @id @default(autoincrement())
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  pseudo              String
-  content             String
-  likes               Int
+  pseudo  String
+  content String
+  likes   Int    @default(0)
 
-  postId              Int
-  post                Post @relation(fields: [postId], references: [id])
+  postId Int
+  post   Post   @relation(fields: [postId], references: [id])
+  Like   Like[]
 
+  @@map("comment")
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId Int
+
+  postId Int?
+  post   Post? @relation(fields: [postId], references: [id])
+
+  commentId Int?
+  comment   Comment? @relation(fields: [commentId], references: [id])
 }
 
 model Post {
-  
-  id                  Int @id @default(autoincrement())
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  userId              Int
-  picture             String
-  description         String
-  likes               Int @default(0)
-  comments            Comment[]
+  userId      Int
+  picture     String
+  description String
+  comments    Comment[]
+  likes        Like[]
+
+  @@map("post")
 }

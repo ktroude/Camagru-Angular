@@ -5,6 +5,7 @@ import {
   HttpStatus,
   ParseFilePipeBuilder,
   Post,
+  Res,
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
@@ -13,7 +14,13 @@ import { PostService } from './post.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { PostDTO, commentDTO } from './dto';
 import { MyFileTypeValidator } from 'src/common/validators/myFileValidator.validator';
-import { GetCurrentUser, GetCurrentUserId } from 'src/common/decorators';
+import {
+  GetCurrentUser,
+  GetCurrentUserId,
+  Public,
+} from 'src/common/decorators';
+import { userInfo } from 'os';
+import { Response } from 'express';
 
 @Controller('post')
 export class PostController {
@@ -35,10 +42,12 @@ export class PostController {
     )
     file: Express.Multer.File,
     @Body('data') data: PostDTO,
+    @GetCurrentUserId() userId: number,
   ) {
-    return this.postService.newPost(file, data);
+    return this.postService.newPost(file, data, userId);
   }
 
+  @Public()
   @Post('preview')
   @UseInterceptors(FilesInterceptor('files'))
   preview(
@@ -52,9 +61,12 @@ export class PostController {
         .addMaxSizeValidator({ maxSize: 1024 * 1024 * 8 })
         .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
     )
-    pictures: Array<Express.Multer.File>
+    pictures: Array<Express.Multer.File>,
+    @Res() res: Response,
   ) {
-    return this.postService.preview(pictures);
+      return this.postService.preview(pictures, res);
+    // res.header('Content-Type', 'image/jpeg');
+    // res.send(this.postService.preview(pictures));
   }
 
   @Post('new/comment')

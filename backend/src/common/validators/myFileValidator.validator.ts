@@ -18,6 +18,8 @@ export class MyFileTypeValidator extends FileValidator {
     if (!file)
       return false;
     const response = fileType.parse(file.buffer);
+    if (!response || !response.mime)
+      return false;
     return this._allowedMimeTypes.includes(response.mime);
   }
 

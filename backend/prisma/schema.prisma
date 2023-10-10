@@ -48,6 +48,7 @@ model Post {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
+  userId              Int
   picture             String
   description         String
   likes               Int @default(0)

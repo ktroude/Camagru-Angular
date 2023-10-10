@@ -6,6 +6,4 @@ export class PostDTO {
   @IsString()
   @MaxLength(200)
   description: string;
-  
-  url: string;
 }

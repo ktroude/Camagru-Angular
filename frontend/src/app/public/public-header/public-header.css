@@ -6,20 +6,30 @@
 
 
 header{
-    width: 100vw;
-    margin: 0px;
-    padding: 0px;
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: center;
+    background: linear-gradient(white, rgb(227, 231, 242));
+    width: auto;
     height: 100px;
-    background-color: #a4a4a4;
+    align-items: center;
+    text-align: center;
 }
 
-.delimitation{
-    height: 5px;
-    width: 100%;
-    background: linear-gradient(to top, transparent, #393939);
+.logo{
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: auto;
+    height: 90px;
+    cursor: pointer;
+}
+
+.title{
+    text-align: center;
+    color: rgb(66, 141, 255);
+    font-family: "Chillax Bold";
+    flex: 1;
 }
 
 .button_div{
@@ -33,9 +43,11 @@ header{
 }
 
 .logo{
+    position: absolute;
+    left: 5px;
+    top: 5px;
     width: auto;
     height: 90px;
-    margin: 5px;
     cursor: pointer;
 }
 
@@ -58,6 +70,39 @@ header{
     transition-delay: 0.1s;
 }
 
+.button_container{
+    position: absolute;
+    right: 5px;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    height: 100%;
+    gap: 20px;
+}
+
+.power_on {
+cursor: pointer;
+    height: 50px;
+    width: auto;
+    transition: height 0.3s ease;
+}
+
+.power_on:hover{
+    height: 80px;
+}
+
+.settings{
+    cursor: pointer;
+    height: 50px;
+    width: auto;
+    transition: height 0.3s ease;
+}
+
+.settings:hover{
+    height: 80px;
+}
 
 @media screen and (max-width: 320px) {
  

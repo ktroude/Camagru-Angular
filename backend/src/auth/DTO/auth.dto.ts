@@ -20,9 +20,6 @@ export class signupLocalDTO {
     email:string;
     @IsNotEmpty()
     @IsString()
-    pseudo:string;
-    @IsNotEmpty()
-    @IsString()
     password:string;
 }
 

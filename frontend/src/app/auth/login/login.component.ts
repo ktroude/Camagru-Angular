@@ -1,9 +1,8 @@
 import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { Credentials, Token } from "src/app/interface/auth.interface";
+import { Credentials } from "src/app/interface/auth.interface";
 import { AuthService } from "src/app/services/auth.service";
-import { TokenService } from "src/app/services/token.service";
 
 @Component({
   selector: "app-login",
@@ -55,7 +54,7 @@ import { TokenService } from "src/app/services/token.service";
         <button (click)="this.redirect('auth/register')">Sign In</button>
       </div>
       <footer>
-        <p>© 2023 Camagru - All wrongs reserved</p>
+        <p>© 2023 Camagru - No rights reserved</p>
       </footer>
     </body>
   `,
@@ -72,7 +71,6 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private tokenService: TokenService,
     private httpClient: HttpClient
     ) {}
 
@@ -82,10 +80,9 @@ export class LoginComponent {
 
 onSubmit() {
   this.authService.login(this.form).subscribe({
-    next: (data: Token) => {
-       if (data.token) {
+    next: (response) => {
+       if (response.status === 200) {
         this.match = true;
-        this.tokenService.saveToken(data.token);
         this.router.navigate([''])
       }
       else {

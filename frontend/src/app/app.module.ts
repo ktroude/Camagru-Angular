@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TokenInterceptorProvider } from './utils/token.interceptor';
 
 @NgModule({
   declarations: [
@@ -14,7 +13,7 @@ import { TokenInterceptorProvider } from './utils/token.interceptor';
     BrowserModule,
     AppRoutingModule,
   ],
-  providers: [TokenInterceptorProvider],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,17 +1,38 @@
 import { inject } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivateFn, Router, RouterStateSnapshot } from "@angular/router";
-import { TokenService } from "../services/token.service";
+import {
+  ActivatedRouteSnapshot,
+  CanActivateFn,
+  Router,
+  RouterStateSnapshot,
+} from "@angular/router";
+import axios from "axios";
 
-export const adminGuard: CanActivateFn = (route:ActivatedRouteSnapshot, state:RouterStateSnapshot) => {
-    const router: Router = inject(Router);
-    const tokenService: TokenService = inject(TokenService);
+export const adminGuard: CanActivateFn = async (
+  route: ActivatedRouteSnapshot,
+  state: RouterStateSnapshot
+) => {
+  const router = inject(Router);
 
-    if (tokenService.isLogged())
+  try {
+    const response = await axios.get("http://localhost:8080/auth/verify/token");
+    if (response.status === 200) {
       return true;
-    return false; 
-};
+    } else if (response.status === 401) {
+      const verify = await retry();
+      return verify;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
 
-// a implementer : checker les cookies, checker le jwt, checker le status du mec
-//    --> si pas de token rediriger vers /auth
-//    --> si token mais pas admin rediriger vers 403
-//    --> sinon return true
+  async function retry(): Promise<boolean> {
+    try {
+      const response = await axios.post("http://localhost:8080/auth/refresh");
+      if (response.status === 200) return true;
+      return false;
+    } catch {
+      return false;
+    }
+  }
+};

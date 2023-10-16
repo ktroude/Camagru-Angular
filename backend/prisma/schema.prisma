@@ -18,7 +18,6 @@ model User {
 
   email              String  @unique
   username           String  @unique
-  pseudo             String
   password           String
   role               String
   hashedRefreshToken String?
@@ -34,9 +33,9 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  pseudo  String
-  content String
-  likes   Int    @default(0)
+  username  String
+  content   String
+  likes     Int @default(0)
 
   postId Int
   post   Post   @relation(fields: [postId], references: [id])

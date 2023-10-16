@@ -72,7 +72,7 @@ export class PostService {
 
     const newComment = await this.prismaService.comment.create({
       data: {
-        pseudo: user.pseudo,
+        username: user.username,
         content: comment.content,
         postId: post.id,
       },

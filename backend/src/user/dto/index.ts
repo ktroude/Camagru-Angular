@@ -1,3 +1,2 @@
-export * from './email.dto';
-export * from './password.dto';
-export * from './pseudo.dto';
+export * from './email.dto'
+export * from './password.dto'

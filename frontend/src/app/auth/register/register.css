@@ -1,0 +1,232 @@
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../assets/font/Chillax-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../../assets/font/Chillax-Bold.otf');
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.container {
+    flex: 1;
+}
+
+header{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    background: linear-gradient(white, rgb(227, 231, 242));
+    width: auto;
+    height: 100px;
+    align-items: center;
+    text-align: center;
+}
+
+.logo{
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    width: auto;
+    height: 90px;
+    cursor: pointer;
+}
+
+.title{
+    margin-left: 10px;
+    text-align: center;
+    color: rgb(66, 141, 255);
+    font-family: "Chillax Bold";
+    flex: 1;
+}
+
+.header_button{
+    margin: 10px;
+}
+
+
+button{
+    flex: 1;
+    margin-top: 20px;
+    font-family: "Chillax";
+    height: auto;
+    width: 110px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(66, 141, 255);
+    font-size: 1.2em;
+    color: rgb(227, 231, 242);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    font-family: 'Chillax Bold';
+}
+
+button:hover {
+    background-color: rgb(227, 231, 242);
+    color: rgb(66, 141, 255);
+    border: solid 1px rgb(66, 141, 255); 
+    transition-delay: 0.1s;
+}
+
+.login_button{
+    position: absolute;
+    top: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+input{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    outline: none;
+    font-family: "Chillax";
+    text-align: center;
+}
+
+input:focus {
+    border-color: rgb(66, 141, 255);
+    box-shadow: 0 0 5px rgb(66, 141, 255);
+}
+
+a{
+    margin-top: 60px;
+    font-family: "Chillax";
+    cursor: pointer;
+}
+
+.form_error{
+
+    font-family: "Chillax";
+    color: red;
+    font-size: 12px;
+    text-align: center;
+    width: 280px;
+}
+
+.form_div{
+    height: 100%;
+}
+
+.form_step{
+    display: flex;
+    flex-direction: column;
+}
+
+.button_container{
+    margin: 0px;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+}
+
+
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.form_container{
+    color: rgb(66, 141, 255);
+    font-family: "Chillax Bold";
+    width: 300px;
+    height: 300px;
+    margin: auto;
+    margin-top: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.form_container::before, .form_container::after, .form_container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin-top: 200px;
+}
+
+.form_container::before, .form_container::after {
+    content: "";
+    z-index: -1;
+    margin: -5%;
+    box-shadow: inset 0 0 0 2px;
+    animation: clipMe 8s linear infinite;
+}
+.form_container::before {
+    animation-delay: -4s;
+}
+
+@keyframes clipMe {
+    0%, 100% {
+        clip: rect(0px, 330px, 2px, 0px);
+    }
+    25% {
+        clip: rect(0px, 2px, 330px, 0px);
+    }
+    50% {
+        clip: rect(318px, 330px, 330px, 0px);
+    }
+    75% {
+        clip: rect(0px, 330px, 330px, 318px);
+    }
+}
+
+.error_container{
+    font-family: "Chillax";
+    font-size: 15px;
+    color: red;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    height: 100px;
+    width: 290px;
+}
+
+.pw_input{
+    /* margin-top: 20px; */
+}
+
+footer{
+    font-family: "Chillax";
+    text-align: center;
+    background: linear-gradient(rgb(227, 231, 242), white);
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    bottom: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+@media screen and (max-width: 600px) {
+
+    .logo{
+        margin-top: 20px;
+        height: 50px;
+    }
+
+}

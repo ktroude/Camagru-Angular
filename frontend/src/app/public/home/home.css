@@ -1,1 +1,37 @@
+body, html {
+    height: 100%;
+    margin: 0;
+}
 
+.home_container {
+    display: flex;
+    height: 100vh;
+}
+
+.left_container, .right_container {
+    flex: 1;
+    background-color: brown;
+}
+
+.middle_container {
+    gap: 15px;
+    flex: 10;
+    background-color: aqua;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.post_container {
+    max-width: 250px;
+    min-height: 400px;
+    border: 1px solid black;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.post_container:hover {
+    transform: scale(1.2);
+}

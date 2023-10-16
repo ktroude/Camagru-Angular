@@ -6,6 +6,7 @@ import { PublicRoutingModule } from './public-routing.module';
 import { PublicLayoutComponent } from './public-layout/public-layout.component';
 import { PublicHeaderComponent } from './public-header/public-header.component';
 import { ProfileOtherComponent } from './profile-other/profile-other.component';
+import { FooterComponent } from './footer/footer.component';
 
 
 
@@ -15,7 +16,8 @@ import { ProfileOtherComponent } from './profile-other/profile-other.component';
     ProfileComponent,
     PublicLayoutComponent,
     PublicHeaderComponent,
-    ProfileOtherComponent
+    ProfileOtherComponent,
+    FooterComponent
   ],
   imports: [
     CommonModule,

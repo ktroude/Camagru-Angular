@@ -6,7 +6,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './types';
 import * as bcrypt from 'bcryptjs';
-import { EmailDto, PasswordDto, PseudoDto } from './dto';
+import { EmailDto, PasswordDto } from './dto';
 import { ConfigService } from '@nestjs/config';
 import { MailsService } from 'src/mails/mails.service';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
@@ -26,7 +26,6 @@ export class UserService {
         id: true,
         email: true,
         username: true,
-        pseudo: true,
       },
     });
   }
@@ -41,7 +40,6 @@ export class UserService {
           id: true,
           email: true,
           username: true,
-          pseudo: true,
         },
       });
     } catch {
@@ -100,23 +98,6 @@ export class UserService {
     } catch {
       throw new NotFoundException(
         'User does not exist',
-      );
-    }
-  }
-
-  async updatePseudo(userId: number, data: PseudoDto) {
-    try {
-      return await this.prismaService.user.update({
-        where: {
-          id: userId,
-        },
-        data: {
-          pseudo: data.pseudo,
-        },
-      });
-    } catch {
-      throw new BadRequestException(
-        'New pseudo must be string or user does not exist',
       );
     }
   }

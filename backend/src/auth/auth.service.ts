@@ -56,13 +56,14 @@ export class AuthService {
       const url = `http://localhost:8080/auth/confirm/${mailToken}`;
       const html = `<p> Click <a href= "${url}"> here </a> to confirm email</p>`;
       await this.mailsService.sendMail({
-        html,
         to: newUser.email,
         subject: 'Confirm your email',
+        html,
       });
 
       return res.status(201).send();
-    } catch {
+    } catch(e) {
+      console.log(e)
       throw new HttpException(
         'Username or email already taken',
         HttpStatus.CONFLICT,

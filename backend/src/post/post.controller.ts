@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   ParseFilePipeBuilder,
@@ -17,6 +18,7 @@ import { MyFileTypeValidator } from 'src/common/validators/myFileValidator.valid
 import {
   GetCurrentUser,
   GetCurrentUserId,
+  Public,
 } from 'src/common/decorators';
 import { Response } from 'express';
 
@@ -80,5 +82,25 @@ export class PostController {
   @HttpCode(HttpStatus.CREATED)
   newLikeComment(@GetCurrentUserId() userId: number, commentId: number) {
     return this.postService.newLikeComment(userId, commentId);
+  }
+
+  @Get('all')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  getAllPosts(){
+    return this.postService.getAllPosts();
+  }
+
+  @Post('createMany')
+  @Public()
+  @HttpCode(HttpStatus.CREATED)
+  createSomePost() {
+    this.postService.createSomePost()
+  }
+
+  @Get('me')
+  @HttpCode(HttpStatus.OK)
+  getMyPost(@GetCurrentUserId() userId:number) {
+    return this.postService.getMyPost(userId);
   }
 }

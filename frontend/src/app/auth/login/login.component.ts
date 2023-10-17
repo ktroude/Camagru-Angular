@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
+import axios from "axios";
 import { Credentials } from "src/app/interface/auth.interface";
 import { AuthService } from "src/app/services/auth.service";
 
@@ -8,15 +9,24 @@ import { AuthService } from "src/app/services/auth.service";
   selector: "app-login",
   template: `
     <body>
-      <header>
+    <header>
+      <div class="header_container">
         <img
-          class="logo"
-          src="assets/img/photos_660489.png"
-          alt="logo"
-          (click)="this.redirect('auth/login')"
+        class="logo"
+        src="assets/img/global.png"
+        alt="logo"
+        (click)="this.redirect('/')"
         />
+      </div>
+      <div class="title_container">
         <h1 class="title">CAMAGRU</h1>
-      </header>
+      </div>
+        <div class="button_container">
+          <img class="icons" src="assets/img/notification-bell.png" alt="Notifications" *ngIf="this.logged === true">  
+          <img class="icons" src="assets/img/spanner.png" alt="Settings" (click)="this.logout()"/>
+          <img class="icons" src="assets/img/power.png" alt="Log out" (click)="this.redirect('/profile')" />
+        </div>
+    </header> 
       <div class="form_container">
         <form name="auth_form" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()">
           <label for="username">Username</label>
@@ -58,7 +68,11 @@ import { AuthService } from "src/app/services/auth.service";
       </footer>
     </body>
   `,
-  styleUrls: ["./login.css"],
+  styleUrls: [
+    "./login.css",
+    "./header.css"
+    
+  ],
 })
 export class LoginComponent {
   form:Credentials = {
@@ -73,6 +87,27 @@ export class LoginComponent {
     private authService: AuthService,
     private httpClient: HttpClient
     ) {}
+
+  logged:boolean = false;
+
+    ngOnInit() {
+    this.isLogged();
+  }
+
+  async logout() {
+    await axios.post('http://localhost:8080/auth/logout');
+    this.redirect('/auth/login')
+  }
+
+  async isLogged() {
+    try {
+      const response = await axios.get('http://localhost:8080/auth/verifiy/token')
+      if (response.status === 200)
+        this.logged = true;
+    } catch {
+      this.logged = false;
+    }
+  }
 
   redirect(path: string) {
     this.router.navigate([path]);

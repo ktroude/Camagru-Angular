@@ -1,6 +1,7 @@
 FROM node:latest
 WORKDIR /app
-# RUN npm install
-# RUN npm install
+COPY ["package.json", "package-lock.json*", "./"]
+RUN npm install
+COPY ./ /app
 EXPOSE 8080
 CMD ["npm", "run", "start:dev"]

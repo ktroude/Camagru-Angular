@@ -17,6 +17,7 @@ header{
 }
 
 .header_container{
+    display: flex;
     flex: 1;
 }
 
@@ -25,9 +26,7 @@ header{
 }
 
 .logo{
-    /* position: absolute; */
-    left: 5px;
-    top: 5px;
+
     width: auto;
     height: 100px;
     cursor: pointer;
@@ -50,14 +49,6 @@ header{
     align-items: center;
 }
 
-.logo{
-    position: absolute;
-    left: 5px;
-    top: 5px;
-    width: auto;
-    height: 90px;
-    cursor: pointer;
-}
 
 .header_button{
     height: auto;

@@ -35,3 +35,11 @@ body, html {
 .post_container:hover {
     transform: scale(1.2);
 }
+
+.masonry-container {
+  margin: 30px;
+}
+
+.masonry-item {
+  margin-bottom: 20px;
+}

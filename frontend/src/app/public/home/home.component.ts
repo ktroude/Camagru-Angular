@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import axios from 'axios';
 import { Post } from 'src/app/interface/home.interface';
 
 @Component({
@@ -6,9 +7,9 @@ import { Post } from 'src/app/interface/home.interface';
   template: `
   <div class="home_container">
     <div class="left_container"></div>
-    <div class="middle_container">
-        <div *ngFor="let post of posts" class="post_container">
-          <img [src]="post.url" [alt]="'Image post of ' + post.author">
+    <div class="masonry-container" ngxMasonry>
+        <div *ngFor="let post of posts" class="masonry-item">
+          <img [src]="post.picture" [alt]="'Image post of ' + post.author">
           <p>{{ <a [href]="'profile/' + post.authorId">@post.author</a> }}</p>        
         </div>
     </div>
@@ -23,7 +24,12 @@ export class HomeComponent {
 
   posts: Post[] = [];
 
-  public getPostData() {
-    
+    ngOnInit() {
+    this.getPostData();
+  }
+
+  public async getPostData() {
+    const response = await axios.get('http://localhost:8080/post/all');
+    this.posts = response.data;
   }
 }

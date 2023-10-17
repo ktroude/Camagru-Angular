@@ -1,5 +1,5 @@
 export interface Post {
-    url:string,
+    picture:string,
     id:number,
     author:string,
     authorId:number

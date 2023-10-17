@@ -63,7 +63,8 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId      Int
+  authorId    Int
+  author      String
   picture     String
   description String
   comments    Comment[]

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsEmail, IsString } from "class-validator";
+import { IsNotEmpty, IsEmail, IsString, MaxLength, MinLength, IsUppercase, IsAlpha, IsNumber, Matches } from "class-validator";
 
 export class signinLocalDTO {
 
@@ -7,11 +7,15 @@ export class signinLocalDTO {
     email:string; // can also be the username
     @IsNotEmpty()
     @IsString()
+    @MaxLength(20)
+    @MinLength(8)
+    @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
+    message: 'The password must contain at least one uppercase letter, one lowercase letter, and a digit'
+  })
     password:string;
 }
 
 export class signupLocalDTO {
-    
     @IsNotEmpty()
     @IsString()
     username:string;
@@ -20,6 +24,11 @@ export class signupLocalDTO {
     email:string;
     @IsNotEmpty()
     @IsString()
+    @MaxLength(20)
+    @MinLength(8)
+    @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
+    message: 'The password must contain at least one uppercase letter, one lowercase letter, and a digit'
+  })
     password:string;
 }
 

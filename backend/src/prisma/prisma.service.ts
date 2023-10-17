@@ -10,7 +10,7 @@ export class PrismaService
     super({
       datasources: {
         db: {
-          url: 'postgresql://postgres:postgres@localhost:5432/postgres?schema=public',
+          url: 'postgresql://postgres:postgres@database:5432/postgres?schema=public',
         },
       },
     });

@@ -1,0 +1,129 @@
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../assets/font/Chillax-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../../assets/font/Chillax-Bold.otf');
+}
+
+settings_container{
+    gap: 40px;
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Chillax';
+    text-align: center;
+}
+
+.title{
+    font-family: "Chillax Bold";
+    color: rgb(162, 132, 246);
+    text-align: center;
+}
+
+.container{
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+}
+
+.side_container{
+    display: flex;
+    flex:1;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.info_container{
+    margin-top: 20px;
+    gap: 40px;
+    flex: 6;
+    font-family: "Chillax";
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    align-items: center;
+    justify-content: center;
+}
+
+.label_container{
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+input{
+    width: 50%;
+    max-width: 250px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    outline: none;
+    font-family: "Chillax";
+    text-align: center;
+}
+
+input:focus {
+    border-color: rgb(162, 132, 246);
+    box-shadow: 0 0 5px rgb(162, 132, 246);
+}
+
+.side_container img{
+    cursor: pointer;
+    width: 60%;
+    height: auto;
+    transition: width 0.6s ease-in-out;
+}
+
+.side_container img:hover{
+    width: 100%;
+    height: auto;
+}
+
+button{
+    margin-top: 20px;
+    font-family: "Chillax";
+    height: auto;
+    width: 110px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(162, 132, 246);
+    font-size: 1.2em;
+    color: rgb(227, 231, 242);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    font-family: 'Chillax Bold';
+}
+
+button:hover {
+    background-color: rgb(227, 231, 242);
+    color: rgb(162, 132, 246);
+    border: solid 1px rgb(162, 132, 246); 
+    transition-delay: 0.1s;
+}
+
+.error_container{
+    height: 100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column ;
+    justify-content: center;
+    align-items: center;
+    color: red;
+    font-size: 12;
+    font-family: "Chillax";
+}

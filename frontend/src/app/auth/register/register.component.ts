@@ -88,14 +88,14 @@ export class RegisterComponent {
     match: "",
   };
 
-  labels = ["Username", "Email", "Password", "Password match"];
+  labels = ["Username", "Email", "Password", "Match"];
   messages = [
     "Please enter your username",
     "Please enter your email",
     "Please enter your password",
     "Please confirm your password",
   ];
-  modelProperties = ["username", "email", "password", "password match"];
+  modelProperties = ["username", "email", "password", "match"];
   currentStep = 0;
 
   clicked: boolean = false;
@@ -167,6 +167,8 @@ export class RegisterComponent {
   }
 
   checkPasswordMatch(): string {
+    console.log("PW ==", this.form.password);
+    console.log("Match ==", this.form.match);
     if (this.form.password !== this.form.match) return "Passwords do not match";
     return "";
   }
@@ -192,6 +194,7 @@ export class RegisterComponent {
   hasDigit(str: string) {
     return /\d/.test(str);
   }
+
   async onSubmit() {
     if (this.checkError(this.currentStep) === "") {
       try {
@@ -200,15 +203,18 @@ export class RegisterComponent {
           username: this.form.username,
           email: this.form.email,
           password: this.form.password,
-        }
-        const response = await axios.post("http://localhost:8080/auth/local/signup", data);
-        if (response.status === 409) {
-          this.taken = true;
-        }
+        };
+        const response = await axios.post(
+          "http://localhost:8080/auth/local/signup",
+          data
+        );
+        if (response.status === 409) this.taken = true;
+        else if (response.status === 201) this.redirect("/home");
+        else this.clicked = true;
       } catch (e) {
         console.log("ERROR === ", e);
       }
-      console.log(this.form);
-    } else this.clicked = true;
+    }
+    this.redirect("/home");
   }
 }

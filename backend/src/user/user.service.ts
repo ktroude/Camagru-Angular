@@ -2,11 +2,13 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ConflictException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './types';
 import * as bcrypt from 'bcryptjs';
-import { EmailDto, PasswordDto } from './dto';
+import { EmailDto, PasswordDto, UsernameDto } from './dto';
 import { ConfigService } from '@nestjs/config';
 import { MailsService } from 'src/mails/mails.service';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
@@ -55,19 +57,45 @@ export class UserService {
         },
         data: {
           email: data.email,
-          isEmailConfirmed: false,
         },
       });
     } catch {
       throw new BadRequestException(
-        'New email must be an email or user does not exist',
+        'Email already taken',
+      );
+    }
+  }
+
+  async updateUsername(userId:number, data:UsernameDto) {
+        try {
+      return await this.prismaService.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          username: data.username,
+        },
+      });
+    } catch {
+      throw new ConflictException(
+        'Username already taken',
       );
     }
   }
 
   async updatePassword(userId: number, data: PasswordDto) {
     try {
-      const hash: string = await this.hashData(data.password);
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: userId
+        }
+      });
+      if (!user)
+        throw new NotFoundException('User not found');
+      const match = await bcrypt.compare(data.currentPassword, user.password);
+      if (!match)
+        throw new UnauthorizedException('Wrong password');
+      const hash:string = await this.hashData(data.newPassword);
       await this.prismaService.user.update({
         where: {
           id: userId,
@@ -81,20 +109,20 @@ export class UserService {
           id: userId,
         },
       });
-      const mailToken = await this.createToken(
-        { email: updatedUser.email },
-        {
-          secret: this.configService.get('SENGRID_JWT_SECRET'),
-          expiresIn: 60 * 60,
-        },
-      );
-      const url = `http://localhost:8080/auth/confirm/${mailToken}`;
-      const html = `<p> Click <a href= "${url}"> here </a> to confirm email</p>`;
-      await this.mailsService.sendMail({
-        html,
-        to: updatedUser.email,
-        subject: 'Confirm your email',
-      });
+      // const mailToken = await this.createToken(
+      //   { email: updatedUser.email },
+      //   {
+      //     secret: this.configService.get('SENGRID_JWT_SECRET'),
+      //     expiresIn: 60 * 60,
+      //   },
+      // );
+      // const url = `http://localhost:8080/auth/confirm/${mailToken}`;
+      // const html = `<p> Click <a href= "${url}"> here </a> to confirm email</p>`;
+      // await this.mailsService.sendMail({
+      //   html,
+      //   to: updatedUser.email,
+      //   subject: 'Confirm your email',
+      // });
     } catch {
       throw new NotFoundException(
         'User does not exist',

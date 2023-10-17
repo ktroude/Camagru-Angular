@@ -7,6 +7,13 @@ import {
 } from 'class-validator';
 
 export class PasswordDto {
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(8)
+  @MaxLength(20)
+  currentPassword: string;
+
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
@@ -15,5 +22,5 @@ export class PasswordDto {
     message:
       'Le mot de passe doit contenir au moins une majuscule, une minuscule et un chiffre.',
   })
-  password: string;
+  newPassword: string;
 }

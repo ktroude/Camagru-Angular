@@ -15,7 +15,7 @@ import { Response } from 'express';
 import { AdminGuard, RefreshTokenGuard } from 'src/common/guards';
 import { GetCurrentUserId, Public } from 'src/common/decorators';
 import { GetRefreshToken } from 'src/common/decorators/getRefreshToken.decorator';
-import { PasswordDto } from 'src/user/dto';
+import { PasswordDto } from 'src/auth/DTO/auth.dto';
 
 @Controller('auth')
 export class AuthController {

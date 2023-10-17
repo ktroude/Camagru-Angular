@@ -15,7 +15,7 @@ import { Response } from 'express';
 import { MailsService } from 'src/mails/mails.service';
 import { ConfigService } from '@nestjs/config';
 import { MailInput } from 'src/mails/types';
-import { PasswordDto } from 'src/user/dto';
+import { PasswordDto } from 'src/auth/DTO/auth.dto';
 
 @Injectable()
 export class AuthService {

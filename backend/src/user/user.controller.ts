@@ -13,6 +13,7 @@ import { GetCurrentUserId } from 'src/common/decorators';
 import { User } from './types';
 import { PasswordDto } from './dto/password.dto';
 import { EmailDto } from './dto/email.dto';
+import { UsernameDto } from './dto';
 
 @Controller('user')
 export class UserController {
@@ -31,6 +32,15 @@ export class UserController {
     @Body() data: EmailDto,
   ) {
     return await this.userService.updateEmail(userId, data);
+  }
+
+  @Post('update/username')
+  @HttpCode(HttpStatus.OK)
+  async updateUsername(
+    @GetCurrentUserId() userId: number,
+    @Body() data: UsernameDto,
+  ) {
+    return await this.userService.updateUsername(userId, data);
   }
 
   @Post('update/password')

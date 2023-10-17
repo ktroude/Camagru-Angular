@@ -7,6 +7,7 @@ import { PublicLayoutComponent } from './public-layout/public-layout.component';
 import { PublicHeaderComponent } from './public-header/public-header.component';
 import { ProfileOtherComponent } from './profile-other/profile-other.component';
 import { FooterComponent } from './footer/footer.component';
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -17,11 +18,12 @@ import { FooterComponent } from './footer/footer.component';
     PublicLayoutComponent,
     PublicHeaderComponent,
     ProfileOtherComponent,
-    FooterComponent
+    FooterComponent,
   ],
   imports: [
     CommonModule,
-    PublicRoutingModule
+    PublicRoutingModule,
+    FormsModule
   ]
 })
 export class PublicModule { }

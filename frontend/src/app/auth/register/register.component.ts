@@ -167,8 +167,6 @@ export class RegisterComponent {
   }
 
   checkPasswordMatch(): string {
-    console.log("PW ==", this.form.password);
-    console.log("Match ==", this.form.match);
     if (this.form.password !== this.form.match) return "Passwords do not match";
     return "";
   }

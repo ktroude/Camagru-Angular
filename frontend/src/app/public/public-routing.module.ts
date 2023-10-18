@@ -3,7 +3,7 @@ import { RouterModule, Routes, } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { PublicLayoutComponent } from './public-layout/public-layout.component';
-import { ProfileOtherComponent } from './profile-other/profile-other.component';
+import { CreateComponent } from './create/create.component';
 
 const routes: Routes = [
 
@@ -11,7 +11,7 @@ const routes: Routes = [
     {path: '', redirectTo:'home', pathMatch:'full'},
     {path: "home", component:HomeComponent},
     {path: "profile", component:ProfileComponent},
-    {path: 'profile/:id', component:ProfileOtherComponent}
+    {path: "create", component:CreateComponent},
   ]}
 
 ];

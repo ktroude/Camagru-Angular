@@ -5,9 +5,10 @@ import { ProfileComponent } from './profile/profile.component';
 import { PublicRoutingModule } from './public-routing.module';
 import { PublicLayoutComponent } from './public-layout/public-layout.component';
 import { PublicHeaderComponent } from './public-header/public-header.component';
-import { ProfileOtherComponent } from './profile-other/profile-other.component';
 import { FooterComponent } from './footer/footer.component';
 import { FormsModule } from '@angular/forms';
+import { CreateComponent } from './create/create.component';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
 
 
 
@@ -17,13 +18,14 @@ import { FormsModule } from '@angular/forms';
     ProfileComponent,
     PublicLayoutComponent,
     PublicHeaderComponent,
-    ProfileOtherComponent,
     FooterComponent,
+    CreateComponent,
   ],
   imports: [
     CommonModule,
     PublicRoutingModule,
-    FormsModule
+    FormsModule,
+    CarouselModule.forRoot(),
   ]
 })
 export class PublicModule { }

@@ -41,9 +41,9 @@ settings_container{
     justify-content: center;
 }
 
-
 .info_container{
     margin-top: 20px;
+    overflow: hidden;
     gap: 40px;
     flex: 6;
     font-family: "Chillax";
@@ -126,4 +126,30 @@ button:hover {
     color: red;
     font-size: 12;
     font-family: "Chillax";
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-in-out;
+}
+
+.slide-out {
+  animation: slideOut 0.5s ease-in-out;
 }

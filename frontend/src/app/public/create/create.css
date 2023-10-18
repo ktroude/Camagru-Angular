@@ -1,0 +1,179 @@
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../assets/font/Chillax-Regular.otf');
+}
+
+body{
+    display: flex;
+    flex-direction: row;
+    height: 78vh;
+    width: 100%;
+
+}
+
+h3{
+  font-family: "Chillax";
+  font-size: 20px;
+}
+
+.overlay_container{
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.overlay_container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 3px;
+  background: linear-gradient(to right, white, rgb(227, 231, 242));
+}
+
+.slide{
+  height: 20vw;
+  width: auto;
+  border-radius: 10px;
+  margin: 20px;
+  /* animation: fadeIn 0.5s ease; */
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.next_button{
+  height: 50px;
+  width: auto;
+  transition: all 0.3s ease-in-out;
+}
+.next_button:hover{
+  height: 60px;
+} 
+
+.prev_button{
+  height: 50px;
+  width: auto;
+
+  transition: all 0.5s ease-in-out;
+}
+.prev_button:hover {
+  height: 60px;
+}
+
+
+.camera_container{
+  flex: 1;
+  display: flex;
+  height: 100%;
+
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}
+
+.chose_mode_container{
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon{
+  height: 10vw;
+  width: auto;
+  margin: 2vw;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+.icon:hover {
+  height: 12vw;
+}
+
+.camera{
+  margin-top: 20px;
+  width: 25vw;
+  height: 20vw;
+  border-radius: 10px;
+  background-color: black;
+}
+
+.change_mode{
+  height: auto;
+  display: flex;
+  justify-content:right;
+  align-items: center;
+  position: relative;
+  width: 80%;
+}
+
+.change_mode img{
+  cursor: pointer;
+  width: 50px;
+  height: auto;
+  transition: all 0.5s ease-in-out;
+}
+
+.change_mode img:hover{
+  width: 60px;
+}
+
+.text {
+  font-family: "Chillax";
+  color: rgb(162, 132, 246);
+  right: 60px; 
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+}
+
+.change_mode:hover .text {
+  opacity: 1;
+}
+
+.change {
+  width: 50px;
+  height: auto;
+  /* margin-bottom: -100x; */
+}
+
+.confirmation{
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.confirmation:hover .text {
+  opacity: 1;
+}
+
+
+
+.registered_container{
+  flex: 1;
+  display: flex;
+  height: 100%;
+  background-color:cadetblue;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+}

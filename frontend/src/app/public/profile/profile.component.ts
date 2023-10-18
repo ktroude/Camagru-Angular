@@ -1,6 +1,7 @@
 import { Component } from "@angular/core";
 import axios from "axios";
 
+
 @Component({
   selector: "app-profile",
   template: `
@@ -16,7 +17,7 @@ import axios from "axios";
             (click)="prevStep()"
           />
         </div>
-        <div   *ngIf="currentStep === 0" class="info_container">
+        <div *ngIf="currentStep === 0" class="info_container">
           <div class="label_container">
             <label for="username">Current username: {{ this.username }}</label>
             <input type="text" id="username" placeholder="New Username" [(ngModel)]="newUsername" name="newUsername" />

@@ -15,13 +15,6 @@ import { Router } from '@angular/router';
     flex-direction: column;
     min-height: 100vh;
     }
-
-    app-public-header, app-footer {
-    flex: 0 0 auto;
-}
-router-outlet {
-    flex: 1;
-}
   `
   ]
 })

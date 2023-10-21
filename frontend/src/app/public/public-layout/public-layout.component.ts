@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
   template: `
     <app-public-header></app-public-header>
     <router-outlet></router-outlet>
-    <app-footer></app-footer>
+    <!-- <app-footer></app-footer> -->
     `,
   styles: [
   `

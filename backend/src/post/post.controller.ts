@@ -10,7 +10,11 @@ import {
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
+  BadRequestException
 } from '@nestjs/common';
+import * as sharp from 'sharp';
+
+
 import { PostService } from './post.service';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { PostDTO, commentDTO } from './dto';
@@ -48,16 +52,17 @@ export class PostController {
   }
 
   @Post('preview')
+  @Public()
   @UseInterceptors(FilesInterceptor('files'))
   preview(
     @UploadedFiles(
       new ParseFilePipeBuilder()
         .addValidator(
           new MyFileTypeValidator({
-            fileType: ['image/jpeg', 'image/png'],
+            fileType: ['image/jpeg', 'image/png', 'image/jpg'],
           }),
         )
-        .addMaxSizeValidator({ maxSize: 1024 * 1024 * 8 })
+        .addMaxSizeValidator({ maxSize: 1024 * 1024 * 10 })
         .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
     )
     pictures: Array<Express.Multer.File>,

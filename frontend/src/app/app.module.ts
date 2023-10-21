@@ -7,6 +7,7 @@ import { NgxMasonryModule } from 'ngx-masonry';
 import { FormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SlickCarouselModule } from 'ngx-slick-carousel';
+import { WebcamModule } from 'ngx-webcam';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { SlickCarouselModule } from 'ngx-slick-carousel';
     AppRoutingModule,
     FormsModule,
     BrowserAnimationsModule,
-    SlickCarouselModule
+    SlickCarouselModule,
+    WebcamModule
   ],
   providers: [],
   bootstrap: [AppComponent]

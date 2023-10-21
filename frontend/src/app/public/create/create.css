@@ -6,174 +6,158 @@
 body{
     display: flex;
     flex-direction: row;
-    height: 78vh;
+    height: calc(100vh - 50px);
     width: 100%;
 
 }
 
-h3{
+.side_container{
+  flex: 1;
+  background: linear-gradient(to left, white, rgb(162, 132, 246) );
+  border-left: solid 2px whitesmoke ;
+}
+
+.main_container{
+  flex: 2.5;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content:space-around;
+  background: linear-gradient(to right, white, rgb(162, 132, 246) );
+  margin-left: 15px;
+  text-align: center;
+}
+
+.title{
   font-family: "Chillax";
-  font-size: 20px;
 }
 
 .overlay_container{
-  flex: 1;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.overlay_container::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 3px;
-  background: linear-gradient(to right, white, rgb(227, 231, 242));
-}
-
-.slide{
-  height: 20vw;
-  width: auto;
-  border-radius: 10px;
-  margin: 20px;
-  /* animation: fadeIn 0.5s ease; */
-}
-
-.fade-in {
-  animation: fadeIn 0.8s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.next_button{
-  height: 50px;
-  width: auto;
-  transition: all 0.3s ease-in-out;
-}
-.next_button:hover{
-  height: 60px;
-} 
-
-.prev_button{
-  height: 50px;
-  width: auto;
-
-  transition: all 0.5s ease-in-out;
-}
-.prev_button:hover {
-  height: 60px;
-}
-
-
-.camera_container{
-  flex: 1;
-  display: flex;
-  height: 100%;
-
-  justify-content: flex-start;
-  align-items: center;
-  text-align: center;
-  flex-direction: column;
-}
-
-.chose_mode_container{
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.icon{
-  height: 10vw;
-  width: auto;
-  margin: 2vw;
-  cursor: pointer;
-  transition: all 0.5s ease-in-out;
-}
-
-.icon:hover {
-  height: 12vw;
-}
-
-.camera{
-  margin-top: 20px;
-  width: 25vw;
-  height: 20vw;
-  border-radius: 10px;
-  background-color: black;
-}
-
-.change_mode{
-  height: auto;
-  display: flex;
-  justify-content:right;
-  align-items: center;
-  position: relative;
-  width: 80%;
-}
-
-.change_mode img{
-  cursor: pointer;
-  width: 50px;
-  height: auto;
-  transition: all 0.5s ease-in-out;
-}
-
-.change_mode img:hover{
-  width: 60px;
-}
-
-.text {
-  font-family: "Chillax";
-  color: rgb(162, 132, 246);
-  right: 60px; 
-  opacity: 0;
-  transition: all 0.5s ease-in-out;
-}
-
-.change_mode:hover .text {
-  opacity: 1;
-}
-
-.change {
-  width: 50px;
-  height: auto;
-  /* margin-bottom: -100x; */
-}
-
-.confirmation{
-  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  width: 35vw;
+  height: auto;
 }
 
-.confirmation:hover .text {
-  opacity: 1;
+.overlay{
+  height: 20vw;
+  width: 30vw;
+  min-width: 200px;
+  min-height: 150px;
+  border-radius: 10px;
 }
 
-
-
-.registered_container{
-  flex: 1;
+.overlay_arrow_container{
+  position: relative;
   display: flex;
-  height: 100%;
-  background-color:cadetblue;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  flex-direction: row;
+  width: auto;
+}
+
+.arrow{
+  width: 40px;
+  height: auto;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.camera_container {
+  /* background-color: brown; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 35vw;
+  height: auto;
+}
+
+.title_camera{
+  font-family: "Chillax";
+  margin-top: 66px;
+}
+
+.camera{
+  height: 20vw;
+  width: 30vw;
+  min-width: 200px;
+  min-height: 150px;
+  background-color: rgb(227, 231, 242);
+  border-radius: 10px;
+}
+
+.choice_container{
+  display: flex;
   text-align: center;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 35vw;
+}
+
+.choice_box{
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: 20vw;
+  width: 30vw;
+  min-width: 200px;
+  min-height: 150px;;
+  border-radius: 10px;
+  background-color: rgb(227, 231, 242);
+  /* border: 3px solid rgb(162, 132, 246); */
+}
+
+.img_choice{
+  min-height: 50px;
+  height: 5vw;
+  width: auto;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.img_choice:hover{
+  height: 6vw;
+  min-height: 60px;
+}
+
+.check{
+  margin-top: 10px;
+  border-radius: 10px;
+  background-color: whitesmoke;
+  height: 40px;
+  z-index: 1;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 1000px) {
+    .main_container {
+      margin-left: 1px;
+      flex: 1.4;
+      flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 500px) {
+.overlay{
+  min-width: 150px;
+  min-height: 100px;
+}
+
+.arrow{
+  width: 20px;
+}
+
+.choice_box{
+  min-width: 150px;
+  min-height: 100px;
+}
+
+.img_choice{
+  min-height: 40px;
+}
 }

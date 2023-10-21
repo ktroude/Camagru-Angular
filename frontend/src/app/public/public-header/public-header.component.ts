@@ -8,12 +8,12 @@ import axios from "axios";
   template: `
     <header>
       <div class="header_container">
-        <img
+        <!-- <img
         class="logo"
         src="assets/img/global.png"
         alt="logo"
         (click)="this.redirect('/')"
-        />
+        /> -->
       </div>
       <div class="title_container">
         <h1 class="title">CAMAGRU</h1>

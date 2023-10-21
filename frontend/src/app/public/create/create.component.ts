@@ -1,89 +1,281 @@
-import { Component } from '@angular/core';
-
+import { Component, ElementRef, ViewChild } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import axios from "axios";
+import { fadeInAnimation } from "./create.animation";
 
 @Component({
-  selector: 'app-create',
+  selector: "app-create",
   template: `
-          <body>
-
-          <div class="overlay_container">
-            <h3>Choose an overlay</h3>
-            <img  class="prev_button" src="assets/img/image (1).png" alt="button up"(click)="getPrev()" >
-            <img class="slide" src="{{ getSlide() }}" alt="slide" [class.fade-in]="shouldFadeIn" />
-            <img  class="next_button" src="assets/img/image.png" alt="button down" (click)="getNext()" >
+    <body>
+      <div class="main_container">
+        <div class="overlay_container">
+          <p class="title">Choose an overlay</p>
+          <div class="overlay_arrow_container">
+            <img
+              src="assets/img/left-arrow.png"
+              alt=""
+              class="arrow"
+              (click)="getPrev()"
+            />
+            <img
+              class="overlay"
+              src="{{ getSlide() }}"
+              alt="slide"
+              id="{{ this.slides[this.i] }}"
+            />
+            <img
+              src="assets/img/right-arrow.png"
+              alt=""
+              class="arrow"
+              (click)="getNext()"
+            />
           </div>
-
-
-
-          <div class="camera_container">
-            <h3>Use your webcam or select a file</h3>
-            <div class="change_mode">
-              <div class="text">Select a file</div>
-              <img  class="change" *ngIf="this.file === true" src="assets/img/video.png" alt="">
-              <img  class="change" *ngIf="this.camera === true" src="assets/img/phone.png" alt="">
-            </div>
-            <div *ngIf="this.camera === false && this.file === false" class="chose_mode_container">
-              <img class='icon' src="assets/img/video.png" alt="" (click)="chooseWebcam()">
-              <img class='icon' src="assets/img/phone.png" alt="" (click)="chooseFile()">
-            </div>
-            <div *ngIf="this.camera === true" class="camera"></div>
-            <div *ngIf="this.camera === true || this.file === true" class="confirmation">
-              <img class="next_button" src="assets/img/check.png" alt="">
-              <div class="text">Validate my choices</div>
-            </div>
+        </div>
+        <div
+          *ngIf="this.camera === true && this.file === false"
+          class="camera_container"
+        >
+          <p class="title_camera">Take a picture</p>
+          <video
+            *ngIf="this.camera === true"
+            class="camera"
+            #videoElement
+            autoplay
+          ></video>
+          <img
+            *ngIf="camera === true"
+            class="check"
+            src="assets/img/check.png"
+            alt="Take a picture"
+            (click)="sendImages()"
+          />
+        </div>
+        <div
+          *ngIf="this.camera === false && this.file === false"
+          class="choice_container"
+        >
+          <p class="title">Use your webcam or select a file</p>
+          <div class="choice_box">
+            <img
+              src="assets/img/video.png"
+              alt=""
+              class="img_choice"
+              (click)="chooseWebcam()"
+            />
+            <label for="file-input" class="custom-file-input-label">
+              <img
+                class="img_choice"
+                src="assets/img/phone.png"
+                alt=""
+                (click)="openFilePicker()"
+              />
+            </label>
           </div>
+        </div>
+      </div>
 
-
-
-          <div class="registered_container">
-            <h3>Post your favorite picture</h3>
+      <div class="side_container">
+        <div *ngIf="this.backendReturn.length > 0">
+          <div *ngFor="let image of this.backendReturn">
+            <img [src]="image" alt="Image" />
           </div>
-
-          </body>
+        </div>
+      </div>
+    </body>
   `,
-  styleUrls: [
-    "./create.css"
-  ]
+  styleUrls: ["./create.css"],
+  animations: [fadeInAnimation],
 })
 export class CreateComponent {
+  @ViewChild("videoElement") videoElement: ElementRef;
 
+  camera: boolean = false;
+  file: boolean = false;
+  currentSlide: string;
+  slides: string[];
+  imageArray: any[] = [];
+  i: number;
+  animationState: boolean = false;
+  selectedImage: File;
 
-  camera:boolean = false;
-  file:boolean = false;
-    slides: string[];
-    i: number;
-    shouldFadeIn: boolean = false;
+  backendReturn: any[] = [];
 
-
-  constructor() {
+  constructor(private httpClient: HttpClient) {
     this.i = 0;
     this.slides = [
-      'https://ep01.epimg.net/elcomidista/imagenes/2022/10/31/articulo/1667206537_604382_1667230832_noticia_normal.jpg',
-      'https://storage.googleapis.com/css-photos/menu-photos/1d2d5a63-1603-473b-9464-e8fa6787f40b.jpeg',
-      'https://ep01.epimg.net/elcomidista/imagenes/2022/01/11/receta/1641893642_902475_1641893828_noticia_normal.jpg',
+      "assets/img/overlay/4977.jpg",
+      "https://storage.googleapis.com/css-photos/menu-photos/1d2d5a63-1603-473b-9464-e8fa6787f40b.jpeg",
+      "https://ep01.epimg.net/elcomidista/imagenes/2022/01/11/receta/1641893642_902475_1641893828_noticia_normal.jpg",
     ];
+    this.currentSlide = this.slides[0];
   }
+
+  onSelectFile(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      const fileType = file.type;
+      if (fileType === "image/png" || fileType === "image/jpeg") {
+        this.selectedImage = file;
+      } else {
+        console.error("Not a .png/.jpeg file");
+      }
+    }
+  }
+
   getSlide() {
-    this.shouldFadeIn = true;
-    setTimeout(() => {
-      this.shouldFadeIn = false;
-    }, 800);
     return this.slides[this.i];
   }
 
   getPrev() {
+    this.animationState = true;
     this.i == 0 ? (this.i = this.slides.length - 1) : this.i--;
+    setTimeout(() => {
+      this.animationState = false;
+    }, 500);
   }
 
   getNext() {
+    this.animationState = true;
     this.i < this.slides.length - 1 ? this.i++ : (this.i = 0);
+    setTimeout(() => {
+      this.animationState = false;
+    }, 500);
   }
 
   chooseWebcam() {
     this.camera = true;
+    this.file = false;
+    this.initializeWebcam();
   }
 
-  chooseFile() {
-    this.file = true;
+  async initializeWebcam() {
+    try {
+      this.camera = true;
+      this.file = false;
+      const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+      this.videoElement.nativeElement.srcObject = stream;
+    } catch (err) {
+      console.error("Error accessing webcam:", err);
+    }
   }
+
+  async loadImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+      img.src = url;
+    });
+  }
+
+  async sendImages() {
+    const filter = await this.getImageFileFromUrl(this.currentSlide);
+    const screen = await this.captureWebcamImage();
+    if (!filter || !screen) {
+      console.error("Erreur lors de la récupération des fichiers.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("files", screen, "userImage.png");
+    formData.append("files", filter, "filterImage.png");
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/post/preview",
+        formData,
+        {
+          responseType: "blob",
+        }
+      );
+      const imageUrl = URL.createObjectURL(new Blob([response.data]));
+      this.backendReturn.push(imageUrl);
+    } catch (error) {
+      console.error("Erreur lors de l'envoi des fichiers :", error);
+    }
+  }
+
+  async getImageFileFromUrl(imageUrl: string): Promise<File> {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    const filename = imageUrl.split("/").pop() || "image.png";
+    return new File([blob], filename, { type: blob.type });
+  }
+
+  async captureWebcamImage(): Promise<File | null> {
+    const videoElement = document.querySelector(".camera") as HTMLVideoElement;
+    const canvas = document.createElement("canvas");
+    canvas.width = videoElement.videoWidth;
+    canvas.height = videoElement.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (blob !== null) {
+          const filename = "webcam-screenshot.png";
+          const file = new File([blob], filename, { type: "image/png" });
+          resolve(file);
+        } else {
+          reject(new Error("Impossible de capturer l'image de la webcam."));
+        }
+      }, "image/png");
+    });
+  }
+
+  stopVideoStream() {
+    this.camera = false;
+    this.file = true;
+    const video: HTMLVideoElement = this.videoElement.nativeElement;
+    if (video && video.srcObject) {
+      const tracks = (video.srcObject as MediaStream).getTracks();
+      tracks.forEach((track) => track.stop());
+      video.srcObject = null;
+    }
+    this.openFilePicker();
+  }
+
+  onFileSelected(event: any) {
+    const selectedFile: File = event.target.files[0];
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const headerArray = new Uint8Array(reader.result as ArrayBuffer);
+        if (this.isPng(headerArray) || this.isJpeg(headerArray)) {
+          console.log("Fichier PNG valide :", selectedFile);
+        } else {
+          this.file = false;
+        }
+      };
+      reader.readAsArrayBuffer(selectedFile);
+    }
+    console.log(selectedFile);
+  }
+
+  openFilePicker() {
+    const inputElement: HTMLInputElement = document.createElement("input");
+    inputElement.type = "file";
+    inputElement.accept = ".jpg, .png";
+    inputElement.addEventListener("change", (event: Event) => {
+      this.onFileSelected(event);
+    });
+    inputElement.click();
+  }
+
+  isPng(headerArray: Uint8Array): boolean {
+    return (
+      headerArray.length >= 2 && headerArray[0] === 137 && headerArray[1] === 80
+    );
+  }
+
+  isJpeg(headerArray: Uint8Array): boolean {
+    return (
+      headerArray.length >= 4 &&
+      headerArray[0] === 255 &&
+      headerArray[1] === 216 &&
+      headerArray[2] === 255 &&
+      (headerArray[3] === 224 || headerArray[3] === 225)
+    );
+  }
+}
+function reject(arg0: Error) {
+  throw new Error("Function not implemented.");
 }

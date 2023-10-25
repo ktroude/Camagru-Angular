@@ -5,9 +5,9 @@ In this project, I have developed InstagramClone, a social media platform inspir
 Users can upload photos, apply filters, comment on other users' photos, and leave likes. Additionally, an admin panel has been implemented to manage users and posts.
 
 # Framework:
-Frontend: Angular -> typescript
-Backend: NestJS -> typescript
-Database: PostgreSQL -> Prisma ORM
+Frontend: Angular -> typescript \
+Backend: NestJS -> typescript \
+Database: PostgreSQL -> Prisma ORM \
 
 # Features:
 User authentication and authorization with JSON Web Tokens (JWT) and refresh tokens.

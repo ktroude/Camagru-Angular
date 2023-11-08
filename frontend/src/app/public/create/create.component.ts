@@ -42,14 +42,32 @@ import { fadeInAnimation } from "./create.animation";
             #videoElement
             autoplay
           ></video>
+          <div class="confirm_choice"
+          *ngIf="camera === true"        
+          >
           <img
-            *ngIf="camera === true"
-            class="check"
-            src="assets/img/check.png"
-            alt="Take a picture"
-            (click)="sendImages()"
+          class="check"
+          src="assets/img/check.png"
+          alt="Take a picture"
+          (click)="sendImages()"
           />
+          <img src="assets/img/cross.png" alt="Cancel" class="check" (click)="cancel()" >
         </div>
+        </div>
+        <div *ngIf="this.camera === false && this.file === true" class="file_container">
+          <img class="file" [src]="this.getImageUrl()" alt="user chosen image"> 
+          <div class="confirm_choice"
+          *ngIf="file === true"        
+          >
+          <img
+          class="check"
+          src="assets/img/check.png"
+          alt="Take a picture"
+          (click)="sendImages()"
+          />
+          <img src="assets/img/cross.png" alt="Cancel" class="check" (click)="cancel()" >
+        </div>
+      </div>
         <div
           *ngIf="this.camera === false && this.file === false"
           class="choice_container"
@@ -76,8 +94,8 @@ import { fadeInAnimation } from "./create.animation";
 
       <div class="side_container">
         <div *ngIf="this.backendReturn.length > 0">
-          <div *ngFor="let image of this.backendReturn">
-            <img [src]="image" alt="Image" />
+          <div class="result_container" *ngFor="let image of this.backendReturn">
+            <img class="result" [src]="image" alt="Image" />
           </div>
         </div>
       </div>
@@ -96,30 +114,18 @@ export class CreateComponent {
   imageArray: any[] = [];
   i: number;
   animationState: boolean = false;
-  selectedImage: File;
+  selectedImage: File | null;
 
   backendReturn: any[] = [];
 
   constructor(private httpClient: HttpClient) {
     this.i = 0;
     this.slides = [
-      "assets/img/overlay/4977.jpg",
-      "https://storage.googleapis.com/css-photos/menu-photos/1d2d5a63-1603-473b-9464-e8fa6787f40b.jpeg",
-      "https://ep01.epimg.net/elcomidista/imagenes/2022/01/11/receta/1641893642_902475_1641893828_noticia_normal.jpg",
+      "assets/img/overlay/1.png",
+      "assets/img/overlay/2.png",
+      "assets/img/overlay/3.png",
     ];
     this.currentSlide = this.slides[0];
-  }
-
-  onSelectFile(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      const fileType = file.type;
-      if (fileType === "image/png" || fileType === "image/jpeg") {
-        this.selectedImage = file;
-      } else {
-        console.error("Not a .png/.jpeg file");
-      }
-    }
   }
 
   getSlide() {
@@ -169,7 +175,7 @@ export class CreateComponent {
   }
 
   async sendImages() {
-    const filter = await this.getImageFileFromUrl(this.currentSlide);
+    const filter = await this.getImageFileFromUrl(this.slides[this.i]);
     const screen = await this.captureWebcamImage();
     if (!filter || !screen) {
       console.error("Erreur lors de la récupération des fichiers.");
@@ -230,7 +236,6 @@ export class CreateComponent {
       tracks.forEach((track) => track.stop());
       video.srcObject = null;
     }
-    this.openFilePicker();
   }
 
   onFileSelected(event: any) {
@@ -240,7 +245,9 @@ export class CreateComponent {
       reader.onloadend = () => {
         const headerArray = new Uint8Array(reader.result as ArrayBuffer);
         if (this.isPng(headerArray) || this.isJpeg(headerArray)) {
-          console.log("Fichier PNG valide :", selectedFile);
+          this.selectedImage = selectedFile
+          this.camera = false;
+          this.file = true;
         } else {
           this.file = false;
         }
@@ -258,6 +265,22 @@ export class CreateComponent {
       this.onFileSelected(event);
     });
     inputElement.click();
+  }
+
+  getImageUrl(): string | null {
+    if (this.selectedImage) {
+      return URL.createObjectURL(this.selectedImage);
+    }
+    return null;
+  }
+
+  cancel(){
+    if (this.camera)
+      this.stopVideoStream()
+    if (this.selectedImage)
+      this.selectedImage = null;
+    this.file = false;
+    this.camera = false;
   }
 
   isPng(headerArray: Uint8Array): boolean {

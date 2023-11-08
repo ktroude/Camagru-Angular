@@ -17,7 +17,7 @@ export class PostService {
   constructor(
     private prismaService: PrismaService,
     private mailsService: MailsService,
-    ) {}
+    ) { }
     
     async newPost(file: Express.Multer.File, data: PostDTO, userId: number) {
       const uploadPath = path.join(__dirname, '..', '../uploads');
@@ -169,6 +169,12 @@ async getAllPosts() {
         authorId:true
       }
     });
+
+  //  const postsWithFullImageUrl = posts.map(post => ({
+  //     ...post,
+  //     picture: `http://localhost:8080/${post.picture}`
+  //   }));
+  // return postsWithFullImageUrl;
   } catch {
     throw new ForbiddenException('Something went wrong');
   }
@@ -218,4 +224,6 @@ private async sendMail(userId: number, theme: string) {
     subject: `New ${theme} on your post`,
   });
 }
+
+
 }

@@ -15,6 +15,7 @@ body{
   flex: 1;
   background: linear-gradient(to left, white, rgb(162, 132, 246) );
   border-left: solid 2px whitesmoke ;
+  overflow-y: scroll;
 }
 
 .main_container{
@@ -42,6 +43,7 @@ body{
 }
 
 .overlay{
+  background-color: rgb(227, 231, 242);
   height: 20vw;
   width: 30vw;
   min-width: 200px;
@@ -63,6 +65,25 @@ body{
   height: auto;
   margin: 5px;
   cursor: pointer;
+}
+
+.file_container{
+  margin-top: 106px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 35vw;
+  height: auto;
+}
+
+.file {
+  height: 20vw;
+  width: 30vw;
+  min-width: 200px;
+  min-height: 150px;
+  background-color: transparent;
+  border-radius: 10px;
 }
 
 .camera_container {
@@ -106,7 +127,7 @@ body{
   height: 20vw;
   width: 30vw;
   min-width: 200px;
-  min-height: 150px;;
+  min-height: 150px;
   border-radius: 10px;
   background-color: rgb(227, 231, 242);
   /* border: 3px solid rgb(162, 132, 246); */
@@ -125,6 +146,15 @@ body{
   min-height: 60px;
 }
 
+.confirm_choice{
+  height: 51px;
+  width: 10vw;
+  min-width: 100px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
 .check{
   margin-top: 10px;
   border-radius: 10px;
@@ -134,11 +164,32 @@ body{
   cursor: pointer;
 }
 
+.result_container {
+  width: 100%;
+  margin-top: 10px;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.result{
+  border-radius: 10px;
+  height: auto;
+  width: 80%;
+  min-width: 200px;
+  min-height: 150px;
+}
+
 @media screen and (max-width: 1000px) {
     .main_container {
       margin-left: 1px;
       flex: 1.4;
       flex-direction: column;
+    }
+
+    .file_container{
+      margin-top: 0px;
     }
 }
 
@@ -159,5 +210,9 @@ body{
 
 .img_choice{
   min-height: 40px;
+}
+
+.file_container{
+  margin-top: 0px;
 }
 }

@@ -1,11 +1,9 @@
-body, html {
-    height: 100%;
-    margin: 0;
-}
 
 .home_container {
     display: flex;
-    height: 100vh;
+    height: calc(100vh - 50px);
+    width: 100vw;
+    background: radial-gradient(circle, rgb(227, 231, 242) 20%, rgb(162, 132, 246) 100%);
 }
 
 .left_container, .right_container {
@@ -42,4 +40,15 @@ body, html {
 
 .masonry-item {
   margin-bottom: 20px;
+}
+
+.link {
+    position: relative;
+    margin-top: -10px;
+    color: wheat
+}
+
+.post{
+    max-width: 100px;
+    max-height: 200px;
 }

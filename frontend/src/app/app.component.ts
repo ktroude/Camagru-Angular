@@ -5,14 +5,7 @@ import { Component } from '@angular/core';
   template: `
   <router-outlet></router-outlet>
   `,
-  styles: [
-  `
-    body{
-      margin: 0px;
-      padding: 0px;
-    }
-  `,
-  ]
+  styles: []
 })
 export class AppComponent {
   title:string = 'frontend';

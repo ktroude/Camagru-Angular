@@ -1,8 +1,6 @@
-import { HttpClient } from "@angular/common/http";
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import axios from "axios";
-import { AuthService } from "src/app/services/auth.service";
 
 @Component({
   selector: "app-register",
@@ -104,8 +102,6 @@ export class RegisterComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
-    private httpClient: HttpClient
   ) {}
 
   redirect(path: string) {

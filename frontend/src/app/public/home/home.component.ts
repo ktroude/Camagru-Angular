@@ -1,22 +1,29 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import axios from 'axios';
 import { Post } from 'src/app/interface/home.interface';
 
 @Component({
   selector: 'app-home',
   template: `
-  <div class="home_container">
-        <div *ngFor="let post of posts">
-          <img class='post' [src]="'http://localhost:8080/' + post.picture" [alt]="'Image post of ' + post.author">
-          <p><a class='link' [href]="'profile/' + post.authorId">&#64;{{post.author}}</a></p>        
-        </div>
-  </div>
+  <body>
+    
+    <div class="container">
+      <div *ngFor="let post of posts" class="box">
+        <img [src]="'http://localhost:8080/' + post.picture" [alt]="'Image post of ' + post.author" (click)="redirectId('/post/', post.id)">
+      </div>
+      
+      
+    </div>
+  </body>
   `,
   styleUrls: [
     "./home.css",
   ]
 })
 export class HomeComponent {
+
+    constructor(private router:Router){}
 
   posts: Post[] = [];
 
@@ -28,5 +35,9 @@ export class HomeComponent {
     const response = await axios.get('http://localhost:8080/post/all');
     this.posts = response.data;
     console.log('post =====', this.posts);
+  }
+
+  redirectId(path:string, id:number){
+    this.router.navigate([path + id.toString()])
   }
 }

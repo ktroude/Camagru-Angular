@@ -6,36 +6,35 @@ import axios from "axios";
   selector: "app-register",
   template: `<body>
     <div class="container">
-      <header>
-        <img
-          class="logo"
-          src="assets/img/photos_660489.png"
-          alt="logo"
-          (click)="this.redirect('auth/login')"
-        />
+       <header>
+      <div class="header_container">
+      </div>
+      <div class="title_container">
         <h1 class="title">CAMAGRU</h1>
-      </header>
+      </div>
+    </header>
 
+    <div class="container">
       <div class="form_container">
         <div
-          *ngFor="let label of labels; let i = index"
-          [hidden]="i !== currentStep"
+        *ngFor="let label of labels; let i = index"
+        [hidden]="i !== currentStep"
         >
           <div class="form_div">
             <div style="height: 20px;"></div>
             <label for="{{ modelProperties[i] }}">{{ messages[i] }}</label>
             <div style="height: 20px;"></div>
             <input
-              type="text"
-              [name]="modelProperties[i]"
-              [id]="modelProperties[i]"
+            type="text"
+            [name]="modelProperties[i]"
+            [id]="modelProperties[i]"
               autocomplete="off"
               [(ngModel)]="form[modelProperties[i]]"
               required
               *ngIf="i !== 2 && i !== 3"
-            />
-
-            <input
+              />
+              
+              <input
               type="password"
               [name]="modelProperties[i]"
               [id]="modelProperties[i]"
@@ -43,28 +42,28 @@ import axios from "axios";
               [(ngModel)]="form[modelProperties[i]]"
               required
               *ngIf="i === 2 || i === 3"
-            />
-            <div class="error_container">
-              <p *ngIf="this.clicked === true" style="margin: 0px">
-                {{ this.checkError(this.currentStep) }}
-              </p>
-              <p *ngIf="this.taken === true">Email or username already taken</p>
-            </div>
-            <div class="button_container">
-              <button [disabled]="currentStep === 0" (click)="prevStep()">
-                Previous
-              </button>
-              <button
+              />
+              <div class="error_container">
+                <p *ngIf="this.clicked === true" style="margin: 0px">
+                  {{ this.checkError(this.currentStep) }}
+                </p>
+                <p *ngIf="this.taken === true">Email or username already taken</p>
+              </div>
+              <div class="button_container">
+                <button [disabled]="currentStep === 0" (click)="prevStep()">
+                  Previous
+                </button>
+                <button
                 *ngIf="currentStep !== labels.length - 1"
                 [disabled]="currentStep === labels.length - 1"
                 (click)="nextStep()"
-              >
+                >
                 Next
               </button>
               <button
                 *ngIf="currentStep === labels.length - 1"
                 (click)="onSubmit()"
-              >
+                >
                 Validate
               </button>
             </div>
@@ -72,11 +71,16 @@ import axios from "axios";
         </div>
       </div>
     </div>
+  </div>
     <footer>
-      <p>© 2023 Camagru - All wrongs reserved</p>
+      <p>© 2023 Camagru - No rights reserved</p>
     </footer>
   </body> `,
-  styleUrls: ["./register.css"],
+  styleUrls: [
+    "./register.css",
+    "./header.css"
+  
+  ],
 })
 export class RegisterComponent {
   form: any = {

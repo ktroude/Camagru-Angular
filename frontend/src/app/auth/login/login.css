@@ -8,11 +8,23 @@
     src: url('../../../assets/font/Chillax-Bold.otf');
 }
 
+*{
+    margin: 0;
+    padding: 0;
+}
 
+.container{
+    width: 100%;
+    height: calc(100vh - 80px);
+    background: radial-gradient(circle, rgb(227, 231, 242) 50%, rgb(162, 132, 246) 150%);
+}
 
 body{
+    display: flex;
+    flex-direction: column;
     margin: 0px;
     padding: 0px;
+    height: 100vh;
 }
 
 
@@ -88,6 +100,7 @@ form{
 }
 
 .form_container{
+    z-index: 1;
     color: rgb(162, 132, 246);
     font-family: "Chillax Bold";
     width: 300px;
@@ -131,19 +144,13 @@ form{
     }
 }
 
-.pw_input{
-    /* margin-top: 20px; */
-}
 
-footer{
+.footer{
     font-family: "Chillax";
     text-align: center;
     background: linear-gradient(rgb(227, 231, 242), white);
     width: 100%;
-    height: 60px;
+    height: 30px;
     position: absolute;
     bottom: 0;
-    overflow: hidden;
-    white-space: nowrap;
-
 }

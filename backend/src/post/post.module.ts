@@ -17,7 +17,8 @@ export class PostModule implements OnModuleInit {
   async onModuleInit() {
 
     const posts = await this.prismaService.post.findMany();
-     if (posts.length === 0) { 
+     if (posts.length === 0) {
+
       await  this.generateAutoPost('uploads/1.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
       await  this.generateAutoPost('uploads/2.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
       await  this.generateAutoPost('uploads/3.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
@@ -26,6 +27,9 @@ export class PostModule implements OnModuleInit {
       await  this.generateAutoPost('uploads/6.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
       await  this.generateAutoPost('uploads/7.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
       await  this.generateAutoPost('uploads/8.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
+      await  this.generateAutoPost('uploads/9.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
+      await  this.generateAutoPost('uploads/10.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
+      await  this.generateAutoPost('uploads/11.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
     }
   }
     

@@ -8,20 +8,16 @@ import axios from "axios";
   template: `
     <header>
       <div class="header_container">
-        <!-- <img
-        class="logo"
-        src="assets/img/global.png"
-        alt="logo"
-        (click)="this.redirect('/')"
-        /> -->
       </div>
       <div class="title_container">
         <h1 class="title">CAMAGRU</h1>
       </div>
         <div class="button_container">
           <img class="icons" src="assets/img/notification-bell.png" alt="Notifications" *ngIf="this.logged === true">  
-          <img class="icons" src="assets/img/spanner.png" alt="Settings" (click)="this.logout()"/>
-          <img class="icons" src="assets/img/power.png" alt="Log out" (click)="this.redirect('/profile')" />
+          <img class="icons" src="assets/img/video.png" alt="New Post" *ngIf="this.logged === true" (click)="redirect('/create')">  
+          <img class="icons" src="assets/img/spanner.png" alt="Settings" *ngIf="this.logged === true" (click)="redirect('/profile')"/>
+          <img class="icons" src="assets/img/power.png" alt="Log out" *ngIf="this.logged === true" (click)="logout()"/>
+          <img class="icons" src="assets/img/power.png" alt="Log out" *ngIf="this.logged === false" (click)="redirect('/auth/login')"/>
         </div>
     </header>
   `,

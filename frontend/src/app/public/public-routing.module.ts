@@ -4,6 +4,7 @@ import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { PublicLayoutComponent } from './public-layout/public-layout.component';
 import { CreateComponent } from './create/create.component';
+import { PostComponent } from './post/post.component';
 
 const routes: Routes = [
 
@@ -12,6 +13,8 @@ const routes: Routes = [
     {path: "home", component:HomeComponent},
     {path: "profile", component:ProfileComponent},
     {path: "create", component:CreateComponent},
+    {path: 'post/:id', component: PostComponent},
+
   ]}
 
 ];

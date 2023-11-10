@@ -9,6 +9,7 @@ import { FooterComponent } from './footer/footer.component';
 import { FormsModule } from '@angular/forms';
 import { CreateComponent } from './create/create.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
+import { PostComponent } from './post/post.component';
 
 
 
@@ -20,6 +21,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
     PublicHeaderComponent,
     FooterComponent,
     CreateComponent,
+    PostComponent,
   ],
   imports: [
     CommonModule,

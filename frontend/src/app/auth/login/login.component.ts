@@ -9,63 +9,54 @@ import { AuthService } from "src/app/services/auth.service";
   selector: "app-login",
   template: `
     <body>
-    <header>
+       <header>
       <div class="header_container">
-        <img
-        class="logo"
-        src="assets/img/global.png"
-        alt="logo"
-        (click)="this.redirect('/')"
-        />
       </div>
       <div class="title_container">
         <h1 class="title">CAMAGRU</h1>
       </div>
-        <div class="button_container">
-          <img class="icons" src="assets/img/notification-bell.png" alt="Notifications" *ngIf="this.logged === true">  
-          <img class="icons" src="assets/img/spanner.png" alt="Settings" (click)="this.logout()"/>
-          <img class="icons" src="assets/img/power.png" alt="Log out" (click)="this.redirect('/profile')" />
+    </header>
+      <div class="container">
+        <div class="form_container">
+          <form name="auth_form" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()">
+            <label for="username">Username</label>
+            <input
+            type="text"
+            name="username"
+            id="username"
+            autocomplete="off"
+            [(ngModel)]="form.username"
+            #username="ngModel"
+            required
+            />
+            <p class="form_error" *ngIf="username.errors && username.errors['required'] && f.submitted">Username is required</p>
+            <label class="pw_input" for="password">Password</label>
+            <input
+            type="password"
+            name="password"
+            id="password"
+            autocomplete="off"
+            [(ngModel)]="form.password"
+            #password="ngModel"
+            required
+            minlength="8"
+            />
+            <p class="form_error" *ngIf="password.errors && password.errors['required'] && f.submitted">Password is required</p>
+            <p class="form_error" *ngIf="password.errors && password.errors['minlengt'] && f.submitted">Password must be at least 8 characters</p>
+            <button>Login</button>
+            <a (click)="redirect('/auth/recover')">Password forgot?</a>
+            <p class="form_error" *ngIf="match === false" style="margin-top: 100px;">
+              Username or password incorect !
+            </p>
+          </form>
         </div>
-    </header> 
-      <div class="form_container">
-        <form name="auth_form" #f="ngForm" (ngSubmit)="f.form.valid && onSubmit()">
-          <label for="username">Username</label>
-          <input
-          type="text"
-          name="username"
-          id="username"
-          autocomplete="off"
-          [(ngModel)]="form.username"
-          #username="ngModel"
-          required
-          />
-          <p class="form_error" *ngIf="username.errors && username.errors['required'] && f.submitted">Username is required</p>
-          <label class="pw_input" for="password">Password</label>
-          <input
-          type="password"
-          name="password"
-          id="password"
-          autocomplete="off"
-          [(ngModel)]="form.password"
-          #password="ngModel"
-          required
-          minlength="8"
-          />
-          <p class="form_error" *ngIf="password.errors && password.errors['required'] && f.submitted">Password is required</p>
-          <p class="form_error" *ngIf="password.errors && password.errors['minlengt'] && f.submitted">Password must be at least 8 characters</p>
-          <button>Login</button>
-          <a (click)="redirect('/auth/recover')">Password forgot?</a>
-          <p class="form_error" *ngIf="match === false" style="margin-top: 100px;">
-            Username or password incorect !
-          </p>
-        </form>
+        <div class="login_button">
+          <button (click)="this.redirect('auth/register')">Sign In</button>
       </div>
-      <div class="login_button">
-        <button (click)="this.redirect('auth/register')">Sign In</button>
-      </div>
-      <footer>
+    </div>
+    <div class="footer">
         <p>© 2023 Camagru - No rights reserved</p>
-      </footer>
+    </div>
     </body>
   `,
   styleUrls: [

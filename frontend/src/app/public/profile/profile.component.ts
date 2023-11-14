@@ -94,9 +94,9 @@ export class ProfileComponent {
 
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    this.getUserData();
-    console.log(this.newUsername);
+  async ngOnInit() {
+    await this.getUserData();
+    console.log("username ===", this.username);
   }
 
   redirect(path: string) {
@@ -108,26 +108,33 @@ export class ProfileComponent {
       const response: any = await axios.get("http://localhost:8080/user/me", {
         withCredentials: true,
       });
-      if (response.status === 403) {
-        const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
-          withCredentials: true,
-        });
-        if (retry.status !== 200) this.redirect("/auth/required");
-        else {
-          const resp: any = await axios.get("http://localhost:8080/user/me", {
-            withCredentials: true,
-          });
-          this.id = resp.id;
-          this.email = resp.email;
-          this.username = resp.username;
+      this.id = response.data.id;
+      this.email = response.data.email;
+      this.username = response.data.username;
+    } catch (e: any) {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          console.log("Token expired or invalid. Refreshing...");
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+          if (retry.status !== 200) this.redirect("/auth/required");
+          else {
+            const resp: any = await axios.get("http://localhost:8080/user/me", {
+              withCredentials: true,
+            });
+            this.id = resp.data.id;
+            this.email = resp.data.email;
+            this.username = resp.data.username;
+          }
+        } catch (e: any) {
+          console.error(e);
         }
-      } else {
-        this.id = response.id;
-        this.email = response.email;
-        this.username = response.username;
       }
-    } catch (e) {
-      console.log(e);
     }
   }
 
@@ -136,21 +143,28 @@ export class ProfileComponent {
       const response = await axios.get("http://localhost:8080/post/me", {
         withCredentials: true,
       });
-      if (response.status === 403) {
-        const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
-          withCredentials: true,
-        });
-        if (retry.status !== 200) this.redirect("/auth/required");
-        else {
-          const resp = await axios.get("http://localhost:8080/post/me", {
-            withCredentials: true,
-          });
-          this.posts = resp.data;
+      this.posts = response.data;
+    } catch (e: any) {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+          if (retry.status !== 200) this.redirect("/auth/required");
+          else {
+            const resp = await axios.get("http://localhost:8080/post/me", {
+              withCredentials: true,
+            });
+            this.posts = resp.data;
+          }
+        } catch (e) {
+          console.log(e);
         }
-      } else {
-        this.posts = response.data;
       }
-    } catch (e) {
       console.log(e);
     }
   }
@@ -171,13 +185,14 @@ export class ProfileComponent {
 
   async changeUsernameEmail() {
     this.errorMsg = "";
-    if (this.newUsername) this.changeUsername();
-    if (this.newEmail) this.changeEmail();
+    if (this.newUsername) await this.changeUsername();
+    if (this.newEmail) await this.changeEmail();
+    await this.getUserData();
   }
 
   async changeUsername() {
     if (!this.newUsername) return;
-    if (this.username.length < 3 || this.username.length > 20) {
+    if (this.newUsername.length < 3 || this.newUsername.length > 20) {
       this.errorMsg = "Username must be between 8 and 20 characters";
       return;
     }
@@ -185,29 +200,40 @@ export class ProfileComponent {
       this.errorMsg = "Username must contain only letters";
       return;
     }
-    const response = await axios.post(
-      "http://localhost:8080/user/update/username",
-      { username: this.newUsername },
-      { withCredentials: true }
-    );
-    if (response.status === 200) return;
-    else if (response.status === 409)
-      this.errorMsg = "Username already in use, please choose an other one";
-    else if (response.status === 403) {
-      const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
-        withCredentials: true,
-      });
-      if (retry.status !== 200) this.redirect("/auth/required");
-      const resp = await axios.post(
+    try {
+      const response = await axios.post(
         "http://localhost:8080/user/update/username",
         { username: this.newUsername },
         { withCredentials: true }
       );
-      if (resp.status === 200) return;
-      else if (resp.status === 409)
+      if (response.status === 200) return;
+    } catch (e: any) {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+          if (retry.status !== 200) this.redirect("/auth/required");
+          const resp = await axios.post(
+            "http://localhost:8080/user/update/username",
+            { username: this.newUsername },
+            { withCredentials: true }
+          );
+          if (resp.status === 200) return;
+          else this.errorMsg = "Something went wrong, please try again later";
+        } catch (e: any) {
+          if (e.code === 409)
+            this.errorMsg =
+              "Username already in use, please choose an other one";
+        }
+      } else if (e.code === 409)
         this.errorMsg = "Username already in use, please choose an other one";
       else this.errorMsg = "Something went wrong, please try again later";
-    } else this.errorMsg = "Something went wrong, please try again later";
+    }
   }
 
   async changeEmail() {
@@ -216,27 +242,35 @@ export class ProfileComponent {
       this.errorMsg = "Email must be an email";
       return;
     }
-    const response = await axios.post(
-      "http://localhost:8080/user/update/email",
-      { email: this.newEmail },
-      { withCredentials: true }
-    );
-    if (response.status === 200) return;
-    else if (response.status === 409)
-      this.errorMsg = "Email already in use, please choose an other one";
-    else if (response.status === 403) {
-      const retry = await axios.post("http://localhost:8080/auth/refresh", null, {withCredentials:true});
-      if (retry.status !== 200) this.redirect("/auth/required");
-      const resp = await axios.post(
+    try {
+      const response = await axios.post(
         "http://localhost:8080/user/update/email",
         { email: this.newEmail },
         { withCredentials: true }
       );
-      if (resp.status === 200) return;
-      else if (resp.status === 409)
+      if (response.status === 200) return;
+    } catch (e: any) {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            { withCredentials: true }
+          );
+          if (retry.status !== 200) this.redirect("/auth/required");
+          const resp = await axios.post(
+            "http://localhost:8080/user/update/email",
+            { email: this.newEmail },
+            { withCredentials: true }
+          );
+          if (resp.status === 200) return;
+        } catch (e) {
+          console.error(e);
+        }
+      } else if (e.code === 409)
         this.errorMsg = "Email already in use, please choose an other one";
       else this.errorMsg = "Something went wrong, please try again later";
-    } else this.errorMsg = "Something went wrong, please try again later";
+    }
   }
 
   async changePassword() {
@@ -255,26 +289,8 @@ export class ProfileComponent {
         "The new password must contain at least one uppercase letter, one lowercase letter and one digit";
       return;
     }
-    const response = await axios.post(
-      "http://localhost:8080/user/update/password",
-      {
-        currentPassword: this.oldPassword,
-        newPassword: this.newPassword,
-      },
-      { withCredentials: true }
-    );
-    if (response.status === 200) {
-      this.errorMsg = "";
-      return;
-    } else if (response.status === 401) {
-      this.errorMsg = "Your current password is false, please try again";
-      return;
-    } else if (response.status === 403) {
-      const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
-        withCredentials: true,
-      });
-      if (retry.status !== 200) this.redirect("auth/required");
-      const resp = await axios.post(
+    try {
+      const response = await axios.post(
         "http://localhost:8080/user/update/password",
         {
           currentPassword: this.oldPassword,
@@ -282,19 +298,40 @@ export class ProfileComponent {
         },
         { withCredentials: true }
       );
-      if (resp.status === 200) {
+      if (response.status === 200) {
         this.errorMsg = "";
         return;
-      } else if (resp.status === 401) {
+      }
+    } catch (e: any) {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+          if (retry.status !== 200) this.redirect("auth/required");
+          const resp = await axios.post(
+            "http://localhost:8080/user/update/password",
+            {
+              currentPassword: this.oldPassword,
+              newPassword: this.newPassword,
+            },
+            { withCredentials: true }
+          );
+          if (resp.status === 200) {
+            this.errorMsg = "";
+            return;
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      } else if (e.code === 'ERR_UNAUTHORIZED') {
         this.errorMsg = "Your current password is false, please try again";
         return;
-      } else {
-        this.errorMsg = "Something went wrong, please try again later";
-        return;
       }
-    } else {
-      this.errorMsg = "Something went wrong, please try again later";
-      return;
     }
   }
 

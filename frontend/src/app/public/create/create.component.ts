@@ -122,9 +122,11 @@ import { fadeInAnimation } from "./create.animation";
           <textarea
             class="zoomed_input"
             type="text"
-            placeholder="Write a comment..."
+            placeholder="Add a description ..."
           ></textarea>
-          <button class="zoomed_button">Create new post</button>
+          <button class="zoomed_button" (click)="newPost()">
+            Create new post
+          </button>
         </div>
       </div>
     </body>
@@ -164,16 +166,24 @@ export class CreateComponent implements OnInit {
         "http://localhost:8080/auth/verify/token",
         { withCredentials: true }
       );
-      if (response.status === 401) {
-        const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
-          withCredentials: true,
-        });
-        if (retry.status !== 200) {
-          this.redirect("auth/required");
-        }
-      } else if (response.status !== 200) this.redirect("auth/required");
-    } catch (e) {
-      this.redirect("auth/required");
+      if (response.status !== 200) this.redirect("auth/required");
+    } catch (e: any) {
+      try {
+        if (e.code === "ERR_BAD_REQUEST") {
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+          if (retry.status !== 200) {
+            this.redirect("auth/required");
+          }
+        } else this.redirect("auth/required");
+      } catch (e) {
+        this.redirect("auth/required");
+      }
     }
   }
 
@@ -245,29 +255,37 @@ export class CreateComponent implements OnInit {
           responseType: "blob",
         }
       );
-      if (response.status === 401) {
-        const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
-          withCredentials: true,
-        });
-        if (retry.status !== 200) this.redirect("auth/required");
-        else {
-          const newResponse = await axios.post(
-            "http://localhost:8080/post/preview",
-            formData,
-            {
-              responseType: "blob",
-              withCredentials: true,
-            }
-          );
-          const imageUrl = URL.createObjectURL(new Blob([newResponse.data]));
-          this.backendReturn.push(imageUrl);
-        }
-      } else if (response.status < 300) {
+      if (response.status === 200) {
         const imageUrl = URL.createObjectURL(new Blob([response.data]));
         this.backendReturn.push(imageUrl);
       }
-    } catch (error) {
-      console.error("Erreur lors de l'envoi des fichiers :", error);
+    } catch (e: any) {
+      try {
+        if (e.code === "ERR_BAD_REQUEST") {
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            {
+              withCredentials: true,
+            }
+          );
+          if (retry.status !== 200) this.redirect("auth/required");
+          else {
+            const newResponse = await axios.post(
+              "http://localhost:8080/post/preview",
+              formData,
+              {
+                responseType: "blob",
+                withCredentials: true,
+              }
+            );
+            const imageUrl = URL.createObjectURL(new Blob([newResponse.data]));
+            this.backendReturn.push(imageUrl);
+          }
+        }
+      } catch (e) {
+        console.error("Erreur lors de l'envoi des fichiers :", e);
+      }
     }
   }
 
@@ -378,4 +396,6 @@ export class CreateComponent implements OnInit {
     this.isZoomed = false;
     this.zoomedImageUrl = "";
   }
+
+  newPost() {}
 }

@@ -57,6 +57,7 @@ export class AuthController {
     @GetRefreshToken() refreshToken: string,
     @Res() res: Response,
   ): Promise<Response> {
+    console.log('refresh triggered');
     return this.authService.refreshTokens(userId, refreshToken, res);
   }
 

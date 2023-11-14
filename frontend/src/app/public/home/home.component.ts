@@ -33,11 +33,10 @@ export class HomeComponent {
 
   public async getPostData() {
     try {
-
       const response = await axios.get('http://localhost:8080/post/all');
       this.posts = response.data;
     } catch(e) {
-      console.error("can't get post from backend");
+      console.error("can't get post from backend", e);
     }
   }
 

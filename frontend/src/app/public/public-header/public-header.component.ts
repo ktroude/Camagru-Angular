@@ -135,22 +135,27 @@ export class PublicHeaderComponent
         { withCredentials: true }
       );
       if (response.status === 200) this.logged = true;
-      else if (response.status === 403) {
-        const retry = await axios.post(
-          "http://localhost:8080/auth/refresh",
-          null,
-          { withCredentials: true }
-        );
-        if (retry.status) this.redirect("auth/required");
-        const resp = await axios.get(
-          "http://localhost:8080/auth/verify/token",
-          { withCredentials: true }
-        );
-        if (resp.status === 200) this.logged = true;
-        else this.logged = false;
-      }
       else this.logged = false;
-    } catch (e) {
+    } catch (e: any) {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          const retry = await axios.post(
+            "http://localhost:8080/auth/refresh",
+            null,
+            { withCredentials: true }
+          );
+          if (retry.status) this.redirect("auth/required");
+          const resp = await axios.get(
+            "http://localhost:8080/auth/verify/token",
+            { withCredentials: true }
+          );
+          if (resp.status === 200) this.logged = true;
+          else this.logged = false;
+        } catch (e) {
+          console.error(e);
+          this.logged = false;
+        }
+      }
       this.logged = false;
     }
   }

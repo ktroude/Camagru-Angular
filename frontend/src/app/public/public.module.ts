@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { CreateComponent } from './create/create.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { PostComponent } from './post/post.component';
+import { NotificationComponent } from '../notification/notification.component';
 
 
 
@@ -22,6 +23,7 @@ import { PostComponent } from './post/post.component';
     FooterComponent,
     CreateComponent,
     PostComponent,
+    NotificationComponent
   ],
   imports: [
     CommonModule,

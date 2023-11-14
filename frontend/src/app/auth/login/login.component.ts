@@ -41,8 +41,7 @@ import { AuthService } from "src/app/services/auth.service";
             required
             minlength="8"
             />
-            <p class="form_error" *ngIf="password.errors && password.errors['required'] && f.submitted">Password is required</p>
-            <p class="form_error" *ngIf="password.errors && password.errors['minlengt'] && f.submitted">Password must be at least 8 characters</p>
+            <p class="form_error" *ngIf="password.errors && (password.errors['required'] || password.errors['minlength']) && f.submitted">Password must be at least 8 characters long</p>
             <button>Login</button>
             <a (click)="redirect('/auth/recover')">Password forgot?</a>
             <p class="form_error" *ngIf="match === false" style="margin-top: 100px;">
@@ -75,8 +74,6 @@ export class LoginComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
-    private httpClient: HttpClient
     ) {}
 
   logged:boolean = false;
@@ -86,13 +83,17 @@ export class LoginComponent {
   }
 
   async logout() {
-    await axios.post('http://localhost:8080/auth/logout');
-    this.redirect('/auth/login')
+    try {
+      await axios.post('http://localhost:8080/auth/logout', { withCredentials: true });
+      this.redirect('/auth/login')
+    } catch(e) {
+      this.redirect('/auth/login')
+    }
   }
 
   async isLogged() {
     try {
-      const response = await axios.get('http://localhost:8080/auth/verifiy/token')
+      const response = await axios.get('http://localhost:8080/auth/verify/token', { withCredentials: true })
       if (response.status === 200)
         this.logged = true;
     } catch {
@@ -104,23 +105,23 @@ export class LoginComponent {
     this.router.navigate([path]);
   }
 
-onSubmit() {
-  this.authService.login(this.form).subscribe({
-    next: (response) => {
-       if (response.status === 200) {
+async onSubmit() {
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/auth/local/signin",
+      this.form,
+      { withCredentials: true }
+      );
+      console.log('rep ==', response.status)
+      if (response.status === 200) {
         this.match = true;
         this.router.navigate([''])
       }
       else {
         this.match = false;
       }
-    },
-    error: (err: any) => {
-      console.log(err);
-      this.match = false;
+    } catch(e) {
+        this.match = false;
     }
-  });
-}
-
-
+    }
 }

@@ -3,15 +3,9 @@ import { IsNotEmpty, IsEmail, IsString, MaxLength, MinLength, IsUppercase, IsAlp
 export class signinLocalDTO {
 
     @IsNotEmpty()
-    @IsEmail()
-    email:string; // can also be the username
+    username:string; // can also be the email
     @IsNotEmpty()
     @IsString()
-    @MaxLength(20)
-    @MinLength(8)
-    @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/, {
-    message: 'The password must contain at least one uppercase letter, one lowercase letter, and a digit'
-  })
     password:string;
 }
 

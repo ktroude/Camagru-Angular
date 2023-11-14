@@ -27,15 +27,17 @@ export class AuthController {
     @Body() dto: signupLocalDTO,
     @Res() res: Response,
   ): Promise<Response> {
+    console.log(dto)
     return this.authService.signupLocal(dto, res);
   }
-
+  
   @Public()
   @Post('local/signin')
   signinLocal(
     @Body() dto: signinLocalDTO,
     @Res() res: Response,
-  ): Promise<Response> {
+    ): Promise<Response> {
+    console.log('DTO ==== ', dto);
     return this.authService.signinLocal(dto, res);
   }
 
@@ -79,7 +81,7 @@ export class AuthController {
     return this.authService.recoverPassword(token, data);
   }
 
-  @Get('verifiy/token')
+  @Get('verify/token')
   @HttpCode(HttpStatus.OK)
   verifyAccessTokenValidity(): string {
     return 'Access token is valid';

@@ -19,7 +19,13 @@ async function bootstrap() {
   app.use('/uploads', express.static(join(__dirname, 'post', 'creations')));
   app.useWebSocketAdapter(new IoAdapter(app));
   const server = await app.listen(8080);
-  const io = new socketio.Server(server, { /* options */ });
+  const io = new socketio.Server(server, {
+    cors: {
+      origin: 'http://localhost:4200',
+      methods: ['GET', 'POST'],
+      credentials: true,
+    },
+  });
   app.useWebSocketAdapter(new IoAdapter(io));
 }
 bootstrap();

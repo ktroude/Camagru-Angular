@@ -204,7 +204,8 @@ export class RegisterComponent {
         };
         const response = await axios.post(
           "http://localhost:8080/auth/local/signup",
-          data
+          data,
+          { withCredentials: true }
         );
         if (response.status === 409) this.taken = true;
         else if (response.status === 201) this.redirect("/home");

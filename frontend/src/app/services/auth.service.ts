@@ -1,17 +1,19 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Credentials } from '../interface/auth.interface';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import axios from "axios";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class AuthService {
+  url: string = "http://localhost:8080/auth/local/signin";
+  constructor() {}
 
-  url:string = 'http://localhost:8080/auth/local/signin';
-  constructor(private httpClient: HttpClient) { }
-
-  login(credentials:Credentials): Observable<any> {
-    return this.httpClient.post<any>(this.url, credentials);
+  async login(data: any) {
+    const response = await axios.post(
+      "http://localhost:8080/auth/local/signin",
+      data,
+      { withCredentials: true }
+    );
+    return response;
   }
 }

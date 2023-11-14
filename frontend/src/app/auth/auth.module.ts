@@ -6,13 +6,15 @@ import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { RecoverComponent } from './recover/recover.component';
+import { AuthRequiredComponent } from './auth-required/auth-required.component';
 
 
 @NgModule({
   declarations: [
     RegisterComponent,
     LoginComponent,
-    RecoverComponent
+    RecoverComponent,
+    AuthRequiredComponent
   ],
   imports: [
     CommonModule,

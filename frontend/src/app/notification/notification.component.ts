@@ -4,25 +4,16 @@ import { Component, Input } from '@angular/core';
   selector: 'app-notification',
   template: `
     <div class="notification">
-      {{ message }}
+      <img src="assets/img/bell.png" alt="">
+    <p>
+      Hey there, {{who}} have just {{message.toLowerCase()}} your post
+    </p>
+    <p>Come see and react by cliking here</p>
     </div>
   `,
-  styles: [`
-    .notification {
-      position: fixed;
-      top: 70px;
-      right: 20px;
-      height: 100px;
-      width: 200px;
-      background-color: #4CAF50;
-      color: white;
-      padding: 15px;
-      border-radius: 5px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      z-index: 1000;
-    }
-  `],
+  styleUrls: ['./notification.css'],
 })
 export class NotificationComponent {
   @Input() message: string;
+  @Input() who: string;
 }

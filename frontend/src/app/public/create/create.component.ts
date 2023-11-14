@@ -1,5 +1,5 @@
-import { Component, ElementRef, ViewChild } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Component, ElementRef, ViewChild, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import axios from "axios";
 import { fadeInAnimation } from "./create.animation";
 
@@ -42,32 +42,45 @@ import { fadeInAnimation } from "./create.animation";
             #videoElement
             autoplay
           ></video>
-          <div class="confirm_choice"
-          *ngIf="camera === true"        
-          >
+          <div class="confirm_choice" *ngIf="camera === true">
+            <img
+              class="check"
+              src="assets/img/check.png"
+              alt="Take a picture"
+              (click)="sendImages()"
+            />
+            <img
+              src="assets/img/cross.png"
+              alt="Cancel"
+              class="check"
+              (click)="cancel()"
+            />
+          </div>
+        </div>
+        <div
+          *ngIf="this.camera === false && this.file === true"
+          class="file_container"
+        >
           <img
-          class="check"
-          src="assets/img/check.png"
-          alt="Take a picture"
-          (click)="sendImages()"
+            class="file"
+            [src]="this.getImageUrl()"
+            alt="user chosen image"
           />
-          <img src="assets/img/cross.png" alt="Cancel" class="check" (click)="cancel()" >
+          <div class="confirm_choice" *ngIf="file === true">
+            <img
+              class="check"
+              src="assets/img/check.png"
+              alt="Take a picture"
+              (click)="sendImages()"
+            />
+            <img
+              src="assets/img/cross.png"
+              alt="Cancel"
+              class="check"
+              (click)="cancel()"
+            />
+          </div>
         </div>
-        </div>
-        <div *ngIf="this.camera === false && this.file === true" class="file_container">
-          <img class="file" [src]="this.getImageUrl()" alt="user chosen image"> 
-          <div class="confirm_choice"
-          *ngIf="file === true"        
-          >
-          <img
-          class="check"
-          src="assets/img/check.png"
-          alt="Take a picture"
-          (click)="sendImages()"
-          />
-          <img src="assets/img/cross.png" alt="Cancel" class="check" (click)="cancel()" >
-        </div>
-      </div>
         <div
           *ngIf="this.camera === false && this.file === false"
           class="choice_container"
@@ -94,9 +107,24 @@ import { fadeInAnimation } from "./create.animation";
 
       <div class="side_container">
         <div *ngIf="this.backendReturn.length > 0">
-          <div class="result_container" *ngFor="let image of this.backendReturn">
+          <div
+            class="result_container"
+            *ngFor="let image of this.backendReturn"
+            (click)="zoom(image)"
+          >
             <img class="result" [src]="image" alt="Image" />
           </div>
+        </div>
+      </div>
+      <div *ngIf="isZoomed === true" class="zoomed">
+        <div class="zoomed_container">
+          <img class="zoomed_photo" [src]="zoomedImageUrl" alt="Zoomed Image" />
+          <textarea
+            class="zoomed_input"
+            type="text"
+            placeholder="Write a comment..."
+          ></textarea>
+          <button class="zoomed_button">Create new post</button>
         </div>
       </div>
     </body>
@@ -104,9 +132,11 @@ import { fadeInAnimation } from "./create.animation";
   styleUrls: ["./create.css"],
   animations: [fadeInAnimation],
 })
-export class CreateComponent {
+export class CreateComponent implements OnInit {
   @ViewChild("videoElement") videoElement: ElementRef;
 
+  zoomedImageUrl: string = "";
+  isZoomed: boolean = false;
   camera: boolean = false;
   file: boolean = false;
   currentSlide: string;
@@ -118,7 +148,7 @@ export class CreateComponent {
 
   backendReturn: any[] = [];
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private router: Router) {
     this.i = 0;
     this.slides = [
       "assets/img/overlay/1.png",
@@ -126,6 +156,29 @@ export class CreateComponent {
       "assets/img/overlay/3.png",
     ];
     this.currentSlide = this.slides[0];
+  }
+
+  async ngOnInit() {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/auth/verify/token",
+        { withCredentials: true }
+      );
+      if (response.status === 401) {
+        const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
+          withCredentials: true,
+        });
+        if (retry.status !== 200) {
+          this.redirect("auth/required");
+        }
+      } else if (response.status !== 200) this.redirect("auth/required");
+    } catch (e) {
+      this.redirect("auth/required");
+    }
+  }
+
+  redirect(path: string) {
+    this.router.navigate([path]);
   }
 
   getSlide() {
@@ -192,8 +245,27 @@ export class CreateComponent {
           responseType: "blob",
         }
       );
-      const imageUrl = URL.createObjectURL(new Blob([response.data]));
-      this.backendReturn.push(imageUrl);
+      if (response.status === 401) {
+        const retry = await axios.post("http://localhost:8080/auth/refresh", null, {
+          withCredentials: true,
+        });
+        if (retry.status !== 200) this.redirect("auth/required");
+        else {
+          const newResponse = await axios.post(
+            "http://localhost:8080/post/preview",
+            formData,
+            {
+              responseType: "blob",
+              withCredentials: true,
+            }
+          );
+          const imageUrl = URL.createObjectURL(new Blob([newResponse.data]));
+          this.backendReturn.push(imageUrl);
+        }
+      } else if (response.status < 300) {
+        const imageUrl = URL.createObjectURL(new Blob([response.data]));
+        this.backendReturn.push(imageUrl);
+      }
     } catch (error) {
       console.error("Erreur lors de l'envoi des fichiers :", error);
     }
@@ -221,7 +293,7 @@ export class CreateComponent {
           const file = new File([blob], filename, { type: "image/png" });
           resolve(file);
         } else {
-          reject(new Error("Impossible de capturer l'image de la webcam."));
+          throw Error("Impossible de capturer l'image de la webcam.");
         }
       }, "image/png");
     });
@@ -245,7 +317,7 @@ export class CreateComponent {
       reader.onloadend = () => {
         const headerArray = new Uint8Array(reader.result as ArrayBuffer);
         if (this.isPng(headerArray) || this.isJpeg(headerArray)) {
-          this.selectedImage = selectedFile
+          this.selectedImage = selectedFile;
           this.camera = false;
           this.file = true;
         } else {
@@ -274,11 +346,9 @@ export class CreateComponent {
     return null;
   }
 
-  cancel(){
-    if (this.camera)
-      this.stopVideoStream()
-    if (this.selectedImage)
-      this.selectedImage = null;
+  cancel() {
+    if (this.camera) this.stopVideoStream();
+    if (this.selectedImage) this.selectedImage = null;
     this.file = false;
     this.camera = false;
   }
@@ -298,7 +368,14 @@ export class CreateComponent {
       (headerArray[3] === 224 || headerArray[3] === 225)
     );
   }
-}
-function reject(arg0: Error) {
-  throw new Error("Function not implemented.");
+
+  zoom(url: string) {
+    this.isZoomed = true;
+    this.zoomedImageUrl = url;
+  }
+
+  unzoom() {
+    this.isZoomed = false;
+    this.zoomedImageUrl = "";
+  }
 }

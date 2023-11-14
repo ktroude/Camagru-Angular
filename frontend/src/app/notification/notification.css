@@ -1,0 +1,28 @@
+.notification {
+    cursor: pointer;
+    position: fixed;
+    top: 70px;
+    right: 30px;
+    height: 100px;
+    width: 200px;
+    border-radius: 10px;
+    border: solid 2px rgb(162, 132, 246);
+    background-color: rgb(227, 231, 242);
+    color: rgb(162, 132, 246);
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+img {
+    cursor: pointer;
+    position: fixed;
+    top: 70px;
+    right: 30px;
+    height: 20px;
+    width: auto;
+    padding: 15px;
+    z-index: 1000;    
+}
+

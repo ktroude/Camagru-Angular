@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { Error404Component } from './error/error404/error404.component';
 import { Error403Component } from './error/error403/error403.component';
 import { adminGuard } from './utils/admin.guard';
+import { AuthRequiredComponent } from './auth/auth-required/auth-required.component';
 
 const routes: Routes = [
   { path: '', loadChildren: () => import('./public/public.module').then(module => module.PublicModule)},

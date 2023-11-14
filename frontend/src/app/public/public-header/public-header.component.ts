@@ -12,7 +12,7 @@ import { Subscription } from "rxjs";
     <header>
       <div class="header_container"></div>
       <div class="title_container">
-        <h1 class="title">CAMAGRU</h1>
+        <h1 class="title" (click)="redirect('')">CAMAGRU</h1>
       </div>
       <div class="button_container">
         <img
@@ -45,34 +45,58 @@ import { Subscription } from "rxjs";
         />
       </div>
     </header>
-    <app-notification *ngIf="notificationMessage" [message]="notificationMessage"></app-notification>
-
+    <app-notification
+      *ngIf="notif.message"
+      [message]="notif.message"
+      [who]="notif.who"
+      (click)="redirect(notif.url)"
+    ></app-notification>
   `,
   styleUrls: ["./public-header.css"],
 })
-export class PublicHeaderComponent extends PublicLayoutComponent implements OnDestroy {
-  constructor(
-    router: Router,
-    private notifService: NotificationService
-  ) {
+export class PublicHeaderComponent
+  extends PublicLayoutComponent
+  implements OnDestroy
+{
+  constructor(router: Router, private notifService: NotificationService) {
     super(router);
-    this.notifSubscription = this.notifService.getNotification().subscribe((message) => {
-      this.notificationMessage = message;
-      this.clearNotificationAfterDelay();
-    });
+    this.notifSubscription = this.notifService
+      .getNotification()
+      .subscribe((message) => {
+        this.notif.message = message;
+        this.clearNotificationAfterDelay();
+      });
   }
 
   private notifSubscription: Subscription;
   socket: Socket;
   logged: boolean = false;
   user: any = null;
-  notificationMessage: string|null;
+  notif: { message: string | null; who: string; url: string } = {
+    message: null,
+    who: "",
+    url: "",
+  };
 
   async ngOnInit() {
     await this.isLogged();
     if (this.logged === true) {
-      const response = await axios.get("http://localhost:8080/user/me", { withCredentials: true });
-      if (response.status < 300) this.user = response.data;
+      const response = await axios.get("http://localhost:8080/user/me", {
+        withCredentials: true,
+      });
+      if (response.status === 200) this.user = response.data;
+      else if (response.status === 403) {
+        const retry = await axios.post(
+          "http://localhost:8080/auth/refresh",
+          null,
+          { withCredentials: true }
+        );
+        if (retry.status !== 200) this.redirect("/auth/required");
+        const resp = await axios.get("http://localhost:8080/user/me", {
+          withCredentials: true,
+        });
+        if (resp.status === 200) this.user = resp.data;
+      }
       this.socket = io(`http://localhost:8080`, { withCredentials: true });
       if (this.socket && this.user) {
         this.socket.on("newComment", (data: any) => {
@@ -83,19 +107,20 @@ export class PublicHeaderComponent extends PublicLayoutComponent implements OnDe
         });
       }
     }
-    console.log('logged == ', this.logged)
-    console.log('user == ', this.user)
+    console.log("logged == ", this.logged);
+    console.log("user == ", this.user);
   }
-  
+
   ngOnDestroy() {
     this.notifSubscription.unsubscribe();
   }
-  
+
   async logout() {
     try {
-
       this.logged = false;
-      await axios.post("http://localhost:8080/auth/logout", { withCredentials: true });
+      await axios.post("http://localhost:8080/auth/logout", {
+        withCredentials: true,
+      });
       this.redirect("/auth/login");
     } catch (e) {
       this.logged = false;
@@ -107,28 +132,52 @@ export class PublicHeaderComponent extends PublicLayoutComponent implements OnDe
     try {
       const response = await axios.get(
         "http://localhost:8080/auth/verify/token",
-      { withCredentials: true }
-    );
+        { withCredentials: true }
+      );
       if (response.status === 200) this.logged = true;
-    } catch {
+      else if (response.status === 403) {
+        const retry = await axios.post(
+          "http://localhost:8080/auth/refresh",
+          null,
+          { withCredentials: true }
+        );
+        if (retry.status) this.redirect("auth/required");
+        const resp = await axios.get(
+          "http://localhost:8080/auth/verify/token",
+          { withCredentials: true }
+        );
+        if (resp.status === 200) this.logged = true;
+        else this.logged = false;
+      }
+      else this.logged = false;
+    } catch (e) {
       this.logged = false;
     }
   }
 
   handleNewLike(data: any) {
-    const message = "New Like: " + data.someProperty; // Customize the message
-    this.notifService.showNotification(message);
+    if (data.authorId === this.user.id) {
+      const message = "liked";
+      this.notif.who = data.who;
+      this.notif.url = data.url;
+      this.notifService.showNotification(message);
+    }
   }
 
   handleNewComment(data: any) {
-    // Handle new comment logic
-    const message = "New Comment: " + data.someProperty; // Customize the message
-    this.notifService.showNotification(message);
+    if (data.authorId === this.user.id) {
+      const message = "commented";
+      this.notif.who = data.who;
+      this.notif.url = data.url;
+      this.notifService.showNotification(message);
+    }
   }
 
-    private clearNotificationAfterDelay() {
+  private clearNotificationAfterDelay() {
     setTimeout(() => {
-      this.notificationMessage = null;
+      this.notif.message = null;
+      this.notif.who = "";
+      this.notif.url = "";
     }, 5000);
   }
 }

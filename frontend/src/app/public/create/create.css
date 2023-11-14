@@ -8,7 +8,6 @@ body{
     flex-direction: row;
     height: calc(100vh - 50px);
     width: 100%;
-
 }
 
 .side_container{
@@ -165,6 +164,7 @@ body{
 }
 
 .result_container {
+  cursor: pointer;
   width: 100%;
   margin-top: 10px;
   height: auto;
@@ -181,6 +181,86 @@ body{
   min-height: 150px;
 }
 
+.zoomed {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.zoomed_input{
+  padding: 20px;
+  margin-top: 20px;
+  width: 80%;
+  height: 15%;
+  border: 2px solid rgb(162, 132, 246);
+  color: rgb(162, 132, 246);
+  border-radius: 10px;
+  font-family: 'Chillax';
+  resize: none;
+  outline: none;
+}
+
+.zoomed_container {
+  display: flex;
+  border-radius: 10px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle, rgb(227, 231, 242) 50%, rgb(162, 132, 246) 150%);
+  height: 80%;
+  width: 80%;
+}
+
+.zoomed_photo {
+  border-radius: 10px;
+  height: 50%;
+  width: auto;
+}
+
+.zoomed_button{
+    margin-top: 20px;
+    font-family: "Chillax";
+    height: auto;
+    width: 110px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(162, 132, 246);
+    font-size: 1.2em;
+    color: rgb(227, 231, 242);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    font-family: 'Chillax Bold';
+}
+
+.zoomed_button:hover {
+    background-color: rgb(227, 231, 242);
+    color: rgb(162, 132, 246);
+    border: solid 1px rgb(162, 132, 246); 
+    transition-delay: 0.1s;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media screen and (max-width: 1000px) {
     .main_container {
       margin-left: 1px;
@@ -192,6 +272,7 @@ body{
       margin-top: 0px;
     }
 }
+
 
 @media screen and (max-width: 500px) {
 .overlay{

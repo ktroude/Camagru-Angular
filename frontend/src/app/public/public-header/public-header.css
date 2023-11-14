@@ -37,6 +37,7 @@ header{
     color: rgb(162, 132, 246);
     font-family: "Chillax Bold";
     flex: 1;
+    cursor: pointer;
 }
 
 .button_div{

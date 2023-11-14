@@ -32,9 +32,13 @@ export class HomeComponent {
   }
 
   public async getPostData() {
-    const response = await axios.get('http://localhost:8080/post/all');
-    this.posts = response.data;
-    console.log('post =====', this.posts);
+    try {
+
+      const response = await axios.get('http://localhost:8080/post/all');
+      this.posts = response.data;
+    } catch(e) {
+      console.error("can't get post from backend");
+    }
   }
 
   redirectId(path:string, id:number){

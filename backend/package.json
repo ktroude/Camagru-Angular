@@ -26,6 +26,7 @@
     "@nestjs/jwt": "^10.1.1",
     "@nestjs/passport": "^10.0.2",
     "@nestjs/platform-express": "^10.0.0",
+    "@nestjs/platform-socket.io": "^10.2.8",
     "@prisma/client": "^5.4.2",
     "@sendgrid/mail": "^7.7.0",
     "@types/bcrypt": "^5.0.0",
@@ -46,7 +47,8 @@
     "prisma": "^5.4.2",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "sharp": "^0.32.6"
+    "sharp": "^0.32.6",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
@@ -92,5 +94,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8",
+    "utf-8-validate": "^5.0.10"
   }
 }

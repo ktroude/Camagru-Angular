@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { MailsModule } from './mails/mails.module';
 import { ConfigService } from '@nestjs/config';
 import { PostModule } from './post/post.module';
+import { AppGateway } from './app.gateway';
 
 @Module({
   imports: [AuthModule, PrismaModule, UserModule, MailsModule, PostModule],
@@ -16,7 +17,8 @@ import { PostModule } from './post/post.module';
       provide: APP_GUARD,
       useClass: AccessTokenGuard,
     },
-    ConfigService
+    ConfigService,
+    AppGateway
   ],
 })
 export class AppModule {}

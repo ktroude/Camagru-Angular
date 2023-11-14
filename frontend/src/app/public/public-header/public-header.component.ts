@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { PublicLayoutComponent } from "../public-layout/public-layout.component";
 import { Router } from "@angular/router";
 import axios from "axios";
+import { SocketService } from "src/app/services/socket.service";
 
 @Component({
   selector: "app-public-header",
@@ -24,14 +25,25 @@ import axios from "axios";
   styleUrls: ["./public-header.css"],
 })
 export class PublicHeaderComponent extends PublicLayoutComponent {
-  constructor(router: Router) {
+  constructor(
+    router: Router,
+    private socketService: SocketService
+    ) {
     super(router);
   }
 
   logged:boolean = false;
 
-    ngOnInit() {
-    this.isLogged();
+    async ngOnInit() {
+    await this.isLogged();
+    if (this.logged === true) {                                                                                                                                                                                                                                                                                                                                                                                                                                                        vvffr's
+      this.socketService.newComment().subscribe((data: any) => {
+        this.handleNewComment(data);
+      });
+      this.socketService.newLike().subscribe((data: any) => {
+        this.handleNewLike(data);
+      });
+    }
   }
 
   async logout() {
@@ -48,4 +60,14 @@ export class PublicHeaderComponent extends PublicLayoutComponent {
       this.logged = false;
     }
   }
+
+  handleNewLike(data: any) {
+
+  }
+  
+  handleNewComment(data:any) {
+
+  }
+
+
 }

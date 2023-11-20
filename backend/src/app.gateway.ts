@@ -19,6 +19,8 @@ export class AppGateway {
 
   @SubscribeMessage('comment')
   async handleComment(client: Socket, payload: any) {
+    console.log("TRIGGERED")
+    console.log(payload)
     const postId = payload.postId;
     const commentAuthor = payload.commentAuthor;
 

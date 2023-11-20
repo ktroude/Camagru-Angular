@@ -5,6 +5,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { PublicLayoutComponent } from './public-layout/public-layout.component';
 import { CreateComponent } from './create/create.component';
 import { PostComponent } from './post/post.component';
+import { MyPostComponent } from './my-post/my-post.component';
 
 const routes: Routes = [
 
@@ -14,6 +15,7 @@ const routes: Routes = [
     {path: "profile", component:ProfileComponent},
     {path: "create", component:CreateComponent},
     {path: 'post/:id', component: PostComponent},
+    {path: 'my_post', component: MyPostComponent},
 
   ]}
 

@@ -11,6 +11,7 @@ import { CreateComponent } from './create/create.component';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { PostComponent } from './post/post.component';
 import { NotificationComponent } from '../notification/notification.component';
+import { MyPostComponent } from './my-post/my-post.component';
 
 
 
@@ -23,7 +24,8 @@ import { NotificationComponent } from '../notification/notification.component';
     FooterComponent,
     CreateComponent,
     PostComponent,
-    NotificationComponent
+    NotificationComponent,
+    MyPostComponent
   ],
   imports: [
     CommonModule,

@@ -11,6 +11,7 @@ import * as path from 'path';
 import * as sharp from 'sharp';
 import { Response } from 'express';
 import { MailsService } from 'src/mails/mails.service';
+import { AppGateway } from 'src/app.gateway';
 
 @Injectable()
 export class PostService {
@@ -86,7 +87,7 @@ export class PostService {
       },
     });
 
-    await this.prismaService.post.update({
+    const ret = await this.prismaService.post.update({
       where: {
         id: post.id,
       },
@@ -97,8 +98,10 @@ export class PostService {
           },
         },
       },
+      select: {comments:true }
     });
     await this.sendMail(post.authorId, 'comment');
+    return ret;
   }
 
   async newLikePost(userId: string, postId: string) {

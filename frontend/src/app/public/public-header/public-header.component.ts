@@ -17,6 +17,13 @@ import { Subscription } from "rxjs";
       <div class="button_container">
         <img
           class="icons"
+          src="assets/img/phone.png"
+          alt="New Post"
+          *ngIf="this.logged === true"
+          (click)="redirect('/my_post')"
+        />
+        <img
+          class="icons"
           src="assets/img/video.png"
           alt="New Post"
           *ngIf="this.logged === true"

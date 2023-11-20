@@ -4,10 +4,9 @@ import axios from 'axios';
 import { Post } from 'src/app/interface/home.interface';
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-my-post',
   template: `
   <body>
-    
     <div class="container">
       <div *ngFor="let post of posts" class="box">
         <img [src]="'http://localhost:8080/' + post.picture" [alt]="'Image post of ' + post.author" (click)="redirectId('/post/', post.id)">
@@ -16,23 +15,33 @@ import { Post } from 'src/app/interface/home.interface';
   </body>
   `,
   styleUrls: [
-    "./home.css",
+    './mypost.css',
   ]
 })
-export class HomeComponent {
+export class MyPostComponent {
 
     constructor(private router:Router){}
 
   posts: Post[] = [];
 
-    ngOnInit() {
+    async ngOnInit() {
+      try {
+        await axios.get('http://localhost:8080/auth/verify/token', {withCredentials:true});
+      } catch(e:any) {
+        try {
+          await axios.post('http://localhost:8080/auth/refresh', null, {withCredentials:true});
+        } catch {
+          this.redirect("auth/required");
+        }
+      }
     this.getPostData();
   }
 
   public async getPostData() {
     try {
-      const response = await axios.get('http://localhost:8080/post/all');
+      const response = await axios.get('http://localhost:8080/post/me', {withCredentials:true});
       this.posts = response.data;
+      console.log('data == ', response.data)
       console.log('post ==', this.posts)
     } catch(e) {
       console.error("can't get post from backend", e);
@@ -41,5 +50,9 @@ export class HomeComponent {
 
   redirectId(path:string, id:number){
     this.router.navigate([path + id.toString()])
+  }
+
+  redirect(path:string){
+    this.router.navigate([path])
   }
 }

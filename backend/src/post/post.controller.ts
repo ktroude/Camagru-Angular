@@ -77,6 +77,7 @@ export class PostController {
   @Post('new/comment')
   @HttpCode(HttpStatus.CREATED)
   newComment(@GetCurrentUserId() userId: number, @Body() comment: commentDTO) {
+    console.log('dtto == ', comment)
     return this.postService.newComment(userId, comment);
   }
 

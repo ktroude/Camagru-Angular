@@ -5,7 +5,6 @@ export class commentDTO {
 
     @IsNotEmpty()
     @IsString()
-    @MaxLength(100)
     content: string;
 
     @IsNumber()

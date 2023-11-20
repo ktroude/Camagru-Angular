@@ -133,10 +133,12 @@ export class AuthService {
       },
     });
     if (!user || !user.hashedRefreshToken) {
+      console.log('Je finis la')
       throw new NotFoundException('User or his refresh token does not exist');
     }
     const matches = bcrypt.compare(refreshToken, user.hashedRefreshToken);
     if (!matches) {
+      console.log('Je finis ici')
       throw new ForbiddenException('Access denied');
     }
     const tokens = await this.getTokens(user.id, user.username, user.role);

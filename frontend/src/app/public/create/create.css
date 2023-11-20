@@ -12,7 +12,7 @@ body{
 
 .side_container{
   flex: 1;
-  background: linear-gradient(to left, white, rgb(162, 132, 246) );
+  background: linear-gradient(to left, white, rgb(162, 132, 246) 130%);
   border-left: solid 2px whitesmoke ;
   overflow-y: scroll;
 }
@@ -23,7 +23,7 @@ body{
   flex-direction: row;
   align-items: center;
   justify-content:space-around;
-  background: linear-gradient(to right, white, rgb(162, 132, 246) );
+  background: linear-gradient(to right, white , rgb(162, 132, 246) 130% );
   margin-left: 15px;
   text-align: center;
 }
@@ -40,6 +40,19 @@ body{
   width: 35vw;
   height: auto;
 }
+
+/* .overlay_div {
+ width: 100%;
+ margin-bottom: 10px;
+ margin-top: 10px;
+ break-inside: avoid;
+}
+
+.overlay {
+    max-width: 100%;
+    border-radius: 15px;
+    cursor: pointer;
+} */
 
 .overlay{
   background-color: rgb(227, 231, 242);
@@ -103,6 +116,8 @@ body{
 .camera{
   height: 20vw;
   width: 30vw;
+  /* height: 480px; */
+  /* width: 640px; */
   min-width: 200px;
   min-height: 150px;
   background-color: rgb(227, 231, 242);
@@ -248,6 +263,19 @@ body{
     transition-delay: 0.1s;
 }
 
+.quit{
+  height: 50px;
+  width: auto;
+  cursor: pointer;
+  margin-right: 20px;
+}
+
+.quit_container{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+}
 
 
 

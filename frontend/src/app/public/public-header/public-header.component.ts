@@ -81,21 +81,25 @@ export class PublicHeaderComponent
   async ngOnInit() {
     await this.isLogged();
     if (this.logged === true) {
-      const response = await axios.get("http://localhost:8080/user/me", {
-        withCredentials: true,
-      });
-      if (response.status === 200) this.user = response.data;
-      else if (response.status === 403) {
-        const retry = await axios.post(
-          "http://localhost:8080/auth/refresh",
-          null,
-          { withCredentials: true }
-        );
-        if (retry.status !== 200) this.redirect("/auth/required");
-        const resp = await axios.get("http://localhost:8080/user/me", {
+      try {
+        const response = await axios.get("http://localhost:8080/user/me", {
           withCredentials: true,
         });
-        if (resp.status === 200) this.user = resp.data;
+        this.user = response.data;
+      } catch (e: any) {
+        if (e.error === 403) {
+          try {
+            await axios.post("http://localhost:8080/auth/refresh", null, {
+              withCredentials: true,
+            });
+            const resp = await axios.get("http://localhost:8080/user/me", {
+              withCredentials: true,
+            });
+            this.user = resp.data;
+          } catch (e) {
+            this.redirect("/auth/required");
+          }
+        }
       }
       this.socket = io(`http://localhost:8080`, { withCredentials: true });
       if (this.socket && this.user) {
@@ -107,8 +111,6 @@ export class PublicHeaderComponent
         });
       }
     }
-    console.log("logged == ", this.logged);
-    console.log("user == ", this.user);
   }
 
   ngOnDestroy() {
@@ -121,6 +123,7 @@ export class PublicHeaderComponent
       await axios.post("http://localhost:8080/auth/logout", {
         withCredentials: true,
       });
+      this.logged = false;
       this.redirect("/auth/login");
     } catch (e) {
       this.logged = false;
@@ -130,33 +133,25 @@ export class PublicHeaderComponent
 
   async isLogged() {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/auth/verify/token",
-        { withCredentials: true }
-      );
-      if (response.status === 200) this.logged = true;
-      else this.logged = false;
+      await axios.get("http://localhost:8080/auth/verify/token", {
+        withCredentials: true,
+      });
+      this.logged = true;
     } catch (e: any) {
       if (e.code === "ERR_BAD_REQUEST") {
         try {
-          const retry = await axios.post(
-            "http://localhost:8080/auth/refresh",
-            null,
-            { withCredentials: true }
-          );
-          if (retry.status) this.redirect("auth/required");
-          const resp = await axios.get(
-            "http://localhost:8080/auth/verify/token",
-            { withCredentials: true }
-          );
-          if (resp.status === 200) this.logged = true;
-          else this.logged = false;
+          await axios.post("http://localhost:8080/auth/refresh", null, {
+            withCredentials: true,
+          });
+          await axios.get("http://localhost:8080/auth/verify/token", {
+            withCredentials: true,
+          });
+          this.logged = true;
         } catch (e) {
           console.error(e);
           this.logged = false;
         }
       }
-      this.logged = false;
     }
   }
 

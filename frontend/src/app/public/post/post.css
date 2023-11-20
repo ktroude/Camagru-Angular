@@ -1,0 +1,91 @@
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../../assets/font/Chillax-Bold.otf');
+}
+
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../assets/font/Chillax-Regular.otf');
+}   
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    height: auto;
+    min-height: calc(100vh - 50px);
+    /* width: 100vw; */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, rgb(227, 231, 242) 50%, rgb(162, 132, 246) 150%);
+
+}
+
+
+
+img{
+    margin-top: 10px;
+    border-radius: 10px;
+    height: 80vh;
+    width: auto;
+}
+
+.like_coms{
+    margin-top: 20px;
+    width: 50%;
+    min-width: 200px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.likes img {
+    height: 30px;
+    width: auto;
+    cursor: pointer;
+}
+
+.likes p {
+    color: rgb(162, 132, 246);
+    font-family: 'Chillax';
+}
+
+.comments img {
+    height: 30px;
+    width: auto;
+    cursor: pointer;
+}
+
+.comments p{
+    color: rgb(162, 132, 246);
+    font-family: 'Chillax';
+}
+
+.create_com{
+    margin-top: 20px;
+    width: 50%;
+    min-width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.create_com textarea{
+  padding: 20px;
+  margin-top: 20px;
+  width: 80%;
+  height: 15%;
+  border: 1px solid rgb(162, 132, 246);
+  color: rgb(162, 132, 246);
+  border-radius: 10px;
+  font-family: 'Chillax';
+  resize: none;
+  outline: none;
+}

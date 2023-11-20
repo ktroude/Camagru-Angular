@@ -22,13 +22,6 @@ body{
     columns: 4;
     column-gap: 20px;
     overflow: auto;
-
-    /* overflow: auto;
-    gap: 10px;
-    padding-top: 10px;
-    padding-left: 10px;
-    display: flex;
-    flex-wrap: wrap; */
 }
 
 .container .box {

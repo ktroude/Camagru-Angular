@@ -17,12 +17,14 @@ import { fadeInAnimation } from "./create.animation";
               class="arrow"
               (click)="getPrev()"
             />
-            <img
-              class="overlay"
-              src="{{ getSlide() }}"
-              alt="slide"
-              id="{{ this.slides[this.i] }}"
-            />
+            <div class="overlay_div">
+              <img
+                class="overlay"
+                src="{{ getSlide() }}"
+                alt="slide"
+                id="{{ this.slides[this.i] }}"
+              />
+            </div>
             <img
               src="assets/img/right-arrow.png"
               alt=""
@@ -118,8 +120,18 @@ import { fadeInAnimation } from "./create.animation";
       </div>
       <div *ngIf="isZoomed === true" class="zoomed">
         <div class="zoomed_container">
+          <div class="quit_container">
+            <img
+              src="assets/img/cross.png"
+              alt="Cancel"
+              class="quit"
+              (click)="unzoom()"
+            />
+          </div>
+
           <img class="zoomed_photo" [src]="zoomedImageUrl" alt="Zoomed Image" />
           <textarea
+            [(ngModel)]="description"
             class="zoomed_input"
             type="text"
             placeholder="Add a description ..."
@@ -132,7 +144,7 @@ import { fadeInAnimation } from "./create.animation";
     </body>
   `,
   styleUrls: ["./create.css"],
-  animations: [fadeInAnimation],
+  animations: [],
 })
 export class CreateComponent implements OnInit {
   @ViewChild("videoElement") videoElement: ElementRef;
@@ -145,9 +157,8 @@ export class CreateComponent implements OnInit {
   slides: string[];
   imageArray: any[] = [];
   i: number;
-  animationState: boolean = false;
   selectedImage: File | null;
-
+  description: string = "";
   backendReturn: any[] = [];
 
   constructor(private router: Router) {
@@ -156,33 +167,37 @@ export class CreateComponent implements OnInit {
       "assets/img/overlay/1.png",
       "assets/img/overlay/2.png",
       "assets/img/overlay/3.png",
+      "assets/img/overlay/4.png",
+      "assets/img/overlay/5.png",
+      "assets/img/overlay/6.png",
+      "assets/img/overlay/7.png",
+      "assets/img/overlay/8.png",
+      "assets/img/overlay/9.png",
+      "assets/img/overlay/10.png",
+      "assets/img/overlay/11.png",
+      "assets/img/overlay/12.png",
+      "assets/img/overlay/13.png",
+      "assets/img/overlay/14.png",
+      "assets/img/overlay/15.png",
+      "assets/img/overlay/16.png",
     ];
     this.currentSlide = this.slides[0];
   }
 
   async ngOnInit() {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/auth/verify/token",
-        { withCredentials: true }
-      );
-      if (response.status !== 200) this.redirect("auth/required");
+      await axios.get("http://localhost:8080/auth/verify/token", {
+        withCredentials: true,
+      });
     } catch (e: any) {
-      try {
-        if (e.code === "ERR_BAD_REQUEST") {
-          const retry = await axios.post(
-            "http://localhost:8080/auth/refresh",
-            null,
-            {
-              withCredentials: true,
-            }
-          );
-          if (retry.status !== 200) {
-            this.redirect("auth/required");
-          }
-        } else this.redirect("auth/required");
-      } catch (e) {
-        this.redirect("auth/required");
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          await axios.post("http://localhost:8080/auth/refresh", null, {
+            withCredentials: true,
+          });
+        } catch (e) {
+          this.redirect("auth/required");
+        }
       }
     }
   }
@@ -196,19 +211,11 @@ export class CreateComponent implements OnInit {
   }
 
   getPrev() {
-    this.animationState = true;
     this.i == 0 ? (this.i = this.slides.length - 1) : this.i--;
-    setTimeout(() => {
-      this.animationState = false;
-    }, 500);
   }
 
   getNext() {
-    this.animationState = true;
     this.i < this.slides.length - 1 ? this.i++ : (this.i = 0);
-    setTimeout(() => {
-      this.animationState = false;
-    }, 500);
   }
 
   chooseWebcam() {
@@ -260,8 +267,8 @@ export class CreateComponent implements OnInit {
         this.backendReturn.push(imageUrl);
       }
     } catch (e: any) {
-      try {
-        if (e.code === "ERR_BAD_REQUEST") {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
           const retry = await axios.post(
             "http://localhost:8080/auth/refresh",
             null,
@@ -269,22 +276,20 @@ export class CreateComponent implements OnInit {
               withCredentials: true,
             }
           );
-          if (retry.status !== 200) this.redirect("auth/required");
-          else {
-            const newResponse = await axios.post(
-              "http://localhost:8080/post/preview",
-              formData,
-              {
-                responseType: "blob",
-                withCredentials: true,
-              }
-            );
-            const imageUrl = URL.createObjectURL(new Blob([newResponse.data]));
-            this.backendReturn.push(imageUrl);
-          }
+          const newResponse = await axios.post(
+            "http://localhost:8080/post/preview",
+            formData,
+            {
+              responseType: "blob",
+              withCredentials: true,
+            }
+          );
+          const imageUrl = URL.createObjectURL(new Blob([newResponse.data]));
+          this.backendReturn.push(imageUrl);
+        } catch (e) {
+          console.error("Erreur lors de l'envoi des fichiers :", e);
+          // this.redirect("auth/required");
         }
-      } catch (e) {
-        console.error("Erreur lors de l'envoi des fichiers :", e);
       }
     }
   }
@@ -344,7 +349,6 @@ export class CreateComponent implements OnInit {
       };
       reader.readAsArrayBuffer(selectedFile);
     }
-    console.log(selectedFile);
   }
 
   openFilePicker() {
@@ -397,5 +401,60 @@ export class CreateComponent implements OnInit {
     this.zoomedImageUrl = "";
   }
 
-  newPost() {}
+  async newPost() {
+    const data = {
+      url: this.zoomedImageUrl,
+      data: this.description,
+    };
+
+    try {
+      const response = await axios.get(this.zoomedImageUrl, {
+        responseType: "arraybuffer",
+      });
+      const imageData: ArrayBuffer = response.data;
+      const blob = new Blob([imageData], { type: "image/jpeg" });
+      const file = new File([blob], "downloaded-image.jpg", {
+        type: "image/jpeg",
+      });
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("data", this.description);
+      await axios.post("http://localhost:8080/post/new", formData, {
+        withCredentials: true,
+      });
+    } catch (e: any) {
+      if (e.code === "ERR_BAD_REQUEST") {
+        try {
+          await axios.post("http://localhost:8080/auth/refresh", null, {
+            withCredentials: true,
+          });
+          await axios.post("http://localhost:8080/post/new", data, {
+            withCredentials: true,
+          });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }
+
+  async downloadAndUploadImage(imageUrl: string): Promise<void> {
+    try {
+      const response = await axios.get(imageUrl, {
+        responseType: "arraybuffer",
+      });
+      const imageData: ArrayBuffer = response.data;
+      const blob = new Blob([imageData], { type: "image/jpeg" });
+      const file = new File([blob], "downloaded-image.jpg", {
+        type: "image/jpeg",
+      });
+      const formData = new FormData();
+      formData.append("file", file);
+      await axios.post("http://localhost:3000/upload-image", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } catch (error) {
+     
+    }
+  }
 }

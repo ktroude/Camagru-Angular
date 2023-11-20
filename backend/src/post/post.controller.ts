@@ -10,7 +10,8 @@ import {
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
-  BadRequestException
+  BadRequestException,
+  Param
 } from '@nestjs/common';
 import * as sharp from 'sharp';
 
@@ -45,9 +46,11 @@ export class PostController {
         .build({ errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY }),
     )
     file: Express.Multer.File,
-    @Body('data') data: PostDTO,
+    @Body('data') data: string,
     @GetCurrentUserId() userId: number,
   ) {
+    console.log('data ==', data)
+
     return this.postService.newPost(file, data, userId);
   }
 
@@ -77,9 +80,9 @@ export class PostController {
     return this.postService.newComment(userId, comment);
   }
 
-  @Post('like/post')
+  @Post('like')
   @HttpCode(HttpStatus.CREATED)
-  newLikePost(@GetCurrentUser() userId: number, postId: number) {
+  newLikePost(@GetCurrentUserId() userId:string, @Body("postId") postId:string) {
     return this.postService.newLikePost(userId, postId);
   }
 
@@ -107,5 +110,11 @@ export class PostController {
   @HttpCode(HttpStatus.OK)
   getMyPost(@GetCurrentUserId() userId:number) {
     return this.postService.getMyPost(userId);
+  }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  getPostById(@Param('id') id: string) {
+    return this.postService.getPostById(id);
   }
 }

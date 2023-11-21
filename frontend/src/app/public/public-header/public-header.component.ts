@@ -56,7 +56,7 @@ import { Subscription } from "rxjs";
       *ngIf="notif.message"
       [message]="notif.message"
       [who]="notif.who"
-      (click)="redirect(notif.url)"
+      (click)="redirect('post/' + notif.postId)"
     ></app-notification>
   `,
   styleUrls: ["./public-header.css"],
@@ -79,10 +79,11 @@ export class PublicHeaderComponent
   socket: Socket;
   logged: boolean = false;
   user: any = null;
-  notif: { message: string | null; who: string; url: string } = {
+  notif: { message: string | null; who: string; url:string , postId:number } = {
     message: null,
     who: "",
     url: "",
+    postId: 0
   };
 
   async ngOnInit() {
@@ -108,9 +109,11 @@ export class PublicHeaderComponent
           }
         }
       }
-      this.socket = io(`http://localhost:8080`, { withCredentials: true });
+      this.socket = io('http://localhost:8080', { withCredentials: true });
+      console.log('socket == ', this.socket);
       if (this.socket && this.user) {
         this.socket.on("newComment", (data: any) => {
+          console.log('ici')
           this.handleNewComment(data);
         });
         this.socket.on("newLike", (data: any) => {
@@ -172,11 +175,15 @@ export class PublicHeaderComponent
   }
 
   handleNewComment(data: any) {
-    if (data.authorId === this.user.id) {
+    console.log('data ws == ', data)
+    console.log('u ID ==', this.user.id)
+    console.log(parseInt(data.id, 10) === parseInt(this.user.id, 10))
+    if (parseInt(data.id, 10) === parseInt(this.user.id, 10)) {
       const message = "commented";
       this.notif.who = data.who;
-      this.notif.url = data.url;
+      this.notif.postId = data.postId;
       this.notifService.showNotification(message);
+      console.log('je suis la')
     }
   }
 
@@ -185,6 +192,6 @@ export class PublicHeaderComponent
       this.notif.message = null;
       this.notif.who = "";
       this.notif.url = "";
-    }, 5000);
+    }, 15000);
   }
 }

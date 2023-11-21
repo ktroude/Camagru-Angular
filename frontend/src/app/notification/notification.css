@@ -1,9 +1,20 @@
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../assets/font/Chillax-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../assets/font/Chillax-Bold.otf');
+}
+
 .notification {
+    font-family: 'Chillax';
     cursor: pointer;
     position: fixed;
     top: 70px;
     right: 30px;
-    height: 100px;
+    height: auto;
     width: 200px;
     border-radius: 10px;
     border: solid 2px rgb(162, 132, 246);
@@ -24,5 +35,9 @@ img {
     width: auto;
     padding: 15px;
     z-index: 1000;    
+}
+
+span {
+    font-family: 'Chillax Bold';
 }
 

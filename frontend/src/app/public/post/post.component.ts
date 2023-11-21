@@ -232,6 +232,7 @@ export class PostComponent {
         commentAuthor: this.username,
       };
       this.socket.emit("comment", payload);
+      console.log('emited')
     } catch (e: any) {
       if (e.code === "ERR_BAD_REQUEST") {
         try {

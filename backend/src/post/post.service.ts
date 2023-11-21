@@ -11,7 +11,6 @@ import * as path from 'path';
 import * as sharp from 'sharp';
 import { Response } from 'express';
 import { MailsService } from 'src/mails/mails.service';
-import { AppGateway } from 'src/app.gateway';
 
 @Injectable()
 export class PostService {

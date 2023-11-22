@@ -131,6 +131,20 @@ button:hover {
     font-family: "Chillax";
 }
 
+.set_email{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.email_img{
+  cursor: pointer;
+  height: 40px;
+  width: auto;
+  transform: all 0.5s ease-in-out;
+  margin-bottom: 10px;
+}
+
 @keyframes slideIn {
   from {
     transform: translateY(100%);

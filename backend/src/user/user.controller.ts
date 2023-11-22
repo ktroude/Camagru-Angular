@@ -52,6 +52,15 @@ export class UserController {
     return await this.userService.updatePassword(userId, data);
   }
 
+  @Post('update/email/setting')
+  @HttpCode(HttpStatus.OK)
+  async updateEmailPref(
+    @GetCurrentUserId() userId: number,
+    @Body() data: any,
+  ) {
+    return await this.userService.updateEmailPref(userId, data);
+  }
+
   // ADMIN ENDPOINT
 
   @UseGuards(AdminGuard)

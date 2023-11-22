@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PostDTO, commentDTO } from './dto';
+import { commentDTO } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -99,7 +99,7 @@ export class PostService {
       },
       select: {comments:true }
     });
-    await this.sendMail(post.authorId, 'comment');
+    // await this.sendMail(post.authorId, 'comment');
     return ret;
   }
 
@@ -142,7 +142,7 @@ export class PostService {
       },
       select: {likes:true}
     });
-    await this.sendMail(post.authorId, 'like');
+    // await this.sendMail(post.authorId, 'like');
     return updatePost;
   }
   else {
@@ -160,7 +160,7 @@ const updatePost = await this.prismaService.post.update({
       },
       select: {likes:true}
     });
-    await this.sendMail(post.authorId, 'like');
+    // await this.sendMail(post.authorId, 'like');
     return updatePost;
   }
   }
@@ -254,7 +254,6 @@ const updatePost = await this.prismaService.post.update({
   // UTILS
 
   private async sendMail(userId: number, theme: string) {
-    //theme = like or comment
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,

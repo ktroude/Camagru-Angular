@@ -39,6 +39,11 @@ import { FormsModule } from '@angular/forms';
               [(ngModel)]="newEmail"
             />
           </div>
+          <div class="set_email">
+            Send email notifications: 
+            <img class='email_img' *ngIf="sendEmail === true" src="assets/img/check.png" alt="send email on" (click)="changeEmailSetting()" >
+            <img class='email_img' *ngIf="sendEmail === false" src="assets/img/cross.png" alt="send email on"  (click)="changeEmailSetting()" >
+          </div>
           <div class="error_container">
             <p *ngIf="this.errorMsg.length">{{ this.errorMsg }}</p>
           </div>
@@ -84,7 +89,6 @@ export class ProfileComponent {
   id: number;
   email: string;
   username: string;
-  posts: any[] = [];
 
   newUsername: string = "";
   newEmail: string = "";
@@ -93,6 +97,8 @@ export class ProfileComponent {
 
   errorMsg: string = "";
   currentStep: number = 0;
+  sendEmail:boolean = false;
+
 
   constructor(private router: Router) {}
 
@@ -113,6 +119,7 @@ export class ProfileComponent {
       this.id = response.data.id;
       this.email = response.data.email;
       this.username = response.data.username;
+      this.sendEmail = response.data.sendEmail;
     } catch (e: any) {
       if (e.code === "ERR_BAD_REQUEST") {
         try {
@@ -132,6 +139,7 @@ export class ProfileComponent {
             this.id = resp.data.id;
             this.email = resp.data.email;
             this.username = resp.data.username;
+            this.sendEmail = resp.data.sendEmail;
           }
         } catch (e: any) {
           console.error(e);
@@ -140,36 +148,36 @@ export class ProfileComponent {
     }
   }
 
-  async getMyPost() {
-    try {
-      const response = await axios.get("http://localhost:8080/post/me", {
-        withCredentials: true,
-      });
-      this.posts = response.data;
-    } catch (e: any) {
-      if (e.code === "ERR_BAD_REQUEST") {
-        try {
-          const retry = await axios.post(
-            "http://localhost:8080/auth/refresh",
-            null,
-            {
-              withCredentials: true,
-            }
-          );
-          if (retry.status !== 200) this.redirect("/auth/required");
-          else {
-            const resp = await axios.get("http://localhost:8080/post/me", {
-              withCredentials: true,
-            });
-            this.posts = resp.data;
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      console.log(e);
-    }
-  }
+  // async getMyPost() {
+  //   try {
+  //     const response = await axios.get("http://localhost:8080/post/me", {
+  //       withCredentials: true,
+  //     });
+  //     this.posts = response.data;
+  //   } catch (e: any) {
+  //     if (e.code === "ERR_BAD_REQUEST") {
+  //       try {
+  //         const retry = await axios.post(
+  //           "http://localhost:8080/auth/refresh",
+  //           null,
+  //           {
+  //             withCredentials: true,
+  //           }
+  //         );
+  //         if (retry.status !== 200) this.redirect("/auth/required");
+  //         else {
+  //           const resp = await axios.get("http://localhost:8080/post/me", {
+  //             withCredentials: true,
+  //           });
+  //           this.posts = resp.data;
+  //         }
+  //       } catch (e) {
+  //         console.log(e);
+  //       }
+  //     }
+  //     console.log(e);
+  //   }
+  // }
 
   nextStep() {
     this.errorMsg = "";
@@ -189,6 +197,7 @@ export class ProfileComponent {
     this.errorMsg = "";
     if (this.newUsername) await this.changeUsername();
     if (this.newEmail) await this.changeEmail();
+    await this.sendEmailSetting();
     await this.getUserData();
   }
 
@@ -358,4 +367,18 @@ export class ProfileComponent {
   hasDigit(str: string) {
     return /\d/.test(str);
   }
+
+  changeEmailSetting(){
+    this.sendEmail = !this.sendEmail;
+  }
+
+  async sendEmailSetting() {
+    try{
+      const resp = await axios.post('http://localhost:8080/user/update/email/setting', {setting: this.sendEmail}, {withCredentials:true});
+      this.sendEmail = resp.data.sendEmail;
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
 }

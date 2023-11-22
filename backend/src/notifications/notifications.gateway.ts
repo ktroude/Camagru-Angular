@@ -60,7 +60,7 @@ export class NotificationsGateway implements OnGatewayDisconnect, OnGatewayConne
     };
     if (author.sendEmail === true)
       this.mailsService.sendMail(mailInput);
-    this.server.emit('newComment', { id:author.id, postId:post.id, who:commentAuthor);
+    this.server.emit('newComment', { id:author.id, postId:post.id, who:commentAuthor});
   }
 
     @SubscribeMessage('like')

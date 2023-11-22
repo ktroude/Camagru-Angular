@@ -9,16 +9,12 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './types';
 import * as bcrypt from 'bcryptjs';
 import { EmailDto, PasswordDto, UsernameDto } from './dto';
-import { ConfigService } from '@nestjs/config';
-import { MailsService } from 'src/mails/mails.service';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly configService: ConfigService,
-    private readonly mailsService: MailsService,
     private readonly jwtService: JwtService,
     ) {}
 
@@ -42,6 +38,7 @@ export class UserService {
           id: true,
           email: true,
           username: true,
+          sendEmail:true,
         },
       });
     } catch {
@@ -127,6 +124,26 @@ export class UserService {
       throw new NotFoundException(
         'User does not exist',
       );
+    }
+  }
+
+  async updateEmailPref(userId:number, data:any){
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {id:userId}
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const ret = await this.prismaService.user.update({
+        where: {id: user.id},
+        data: {sendEmail:data.setting},
+        select: {sendEmail:true}
+      });
+      console.log(ret);
+      return ret;
+    } catch(e) {
+
     }
   }
 

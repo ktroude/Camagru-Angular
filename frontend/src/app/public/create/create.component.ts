@@ -1,7 +1,6 @@
-import { Component, ElementRef, ViewChild, OnInit } from "@angular/core";
+import { Component, ElementRef, ViewChild, OnInit, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import axios from "axios";
-import { fadeInAnimation } from "./create.animation";
 
 @Component({
   selector: "app-create",
@@ -146,7 +145,7 @@ import { fadeInAnimation } from "./create.animation";
   styleUrls: ["./create.css"],
   animations: [],
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent implements OnInit, OnDestroy {
   @ViewChild("videoElement") videoElement: ElementRef;
 
   zoomedImageUrl: string = "";
@@ -182,6 +181,9 @@ export class CreateComponent implements OnInit {
       "assets/img/overlay/16.png",
     ];
     this.currentSlide = this.slides[0];
+  }
+  ngOnDestroy(): void {
+    this.stopVideoStream()
   }
 
   async ngOnInit() {

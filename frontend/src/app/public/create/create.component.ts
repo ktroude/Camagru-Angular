@@ -183,7 +183,8 @@ export class CreateComponent implements OnInit, OnDestroy {
     this.currentSlide = this.slides[0];
   }
   ngOnDestroy(): void {
-    this.stopVideoStream()
+    if (this.camera === true)
+      this.stopVideoStream();
   }
 
   async ngOnInit() {

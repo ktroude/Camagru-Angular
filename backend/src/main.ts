@@ -16,7 +16,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
-  app.use('/uploads', express.static(join(__dirname, 'post', 'creations')));
+  app.use('/uploads', express.static(join(__dirname, '../', 'uploads')));
   app.useWebSocketAdapter(new IoAdapter(app));
   await app.listen(8080);
 }

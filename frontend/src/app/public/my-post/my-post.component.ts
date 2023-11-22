@@ -7,7 +7,11 @@ import { Post } from 'src/app/interface/home.interface';
   selector: 'app-my-post',
   template: `
   <body>
-    <div class="container">
+    <div class="no_post" *ngIf="posts.length === 0">
+    <span>No post yet...</span>
+    </div>
+    <div class="container" *ngIf="posts.length > 0">
+    
       <div *ngFor="let post of posts" class="box">
         <img [src]="'http://localhost:8080/' + post.picture" [alt]="'Image post of ' + post.author" (click)="redirectId('/post/', post.id)">
       </div>

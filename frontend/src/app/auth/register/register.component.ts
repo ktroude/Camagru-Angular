@@ -10,7 +10,7 @@ import axios from "axios";
       <div class="header_container">
       </div>
       <div class="title_container">
-        <h1 class="title">CAMAGRU</h1>
+        <h1 class="title" (click)="redirect('/auth')" >CAMAGRU</h1>
       </div>
     </header>
 

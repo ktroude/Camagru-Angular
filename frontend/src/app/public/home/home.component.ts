@@ -33,7 +33,7 @@ export class HomeComponent {
     try {
       const response = await axios.get('http://localhost:8080/post/all');
       this.posts = response.data;
-      console.log('post ==', this.posts)
+      this.posts.sort(() => Math.random() - 0.5); 
     } catch(e) {
       console.error("can't get post from backend", e);
     }

@@ -1,8 +1,7 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
 import axios from "axios";
-import { FormsModule } from '@angular/forms';
-
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: "app-profile",
@@ -40,9 +39,21 @@ import { FormsModule } from '@angular/forms';
             />
           </div>
           <div class="set_email">
-            Send email notifications: 
-            <img class='email_img' *ngIf="sendEmail === true" src="assets/img/check.png" alt="send email on" (click)="changeEmailSetting()" >
-            <img class='email_img' *ngIf="sendEmail === false" src="assets/img/cross.png" alt="send email on"  (click)="changeEmailSetting()" >
+            Send email notifications:
+            <img
+              class="email_img"
+              *ngIf="sendEmail === true"
+              src="assets/img/check.png"
+              alt="send email on"
+              (click)="changeEmailSetting()"
+            />
+            <img
+              class="email_img"
+              *ngIf="sendEmail === false"
+              src="assets/img/cross.png"
+              alt="send email on"
+              (click)="changeEmailSetting()"
+            />
           </div>
           <div class="error_container">
             <p *ngIf="this.errorMsg.length">{{ this.errorMsg }}</p>
@@ -97,14 +108,12 @@ export class ProfileComponent {
 
   errorMsg: string = "";
   currentStep: number = 0;
-  sendEmail:boolean = false;
-
+  sendEmail: boolean = false;
 
   constructor(private router: Router) {}
 
   async ngOnInit() {
     await this.getUserData();
-    console.log("username ===", this.username);
   }
 
   redirect(path: string) {
@@ -123,7 +132,6 @@ export class ProfileComponent {
     } catch (e: any) {
       if (e.code === "ERR_BAD_REQUEST") {
         try {
-          console.log("Token expired or invalid. Refreshing...");
           const retry = await axios.post(
             "http://localhost:8080/auth/refresh",
             null,
@@ -285,8 +293,17 @@ export class ProfileComponent {
   }
 
   async changePassword() {
-    if (!this.newPassword || !this.oldPassword) return;
-    if (this.newPassword.length < 8 || this.newPassword.length > 20) {
+    if (!this.newPassword && !this.oldPassword) {
+      return;
+    }
+    if (!this.oldPassword) {
+      this.errorMsg = "You must enter your password to make changes";
+    }
+    if (
+      this.newPassword.length < 8 ||
+      this.newPassword.length > 20 ||
+      !this.newPassword
+    ) {
       this.errorMsg =
         "The new password must be between 8 and 20 characters long";
       return;
@@ -315,6 +332,10 @@ export class ProfileComponent {
       }
     } catch (e: any) {
       if (e.code === "ERR_BAD_REQUEST") {
+        if (e.message === "Request failed with status code 400") {
+          this.errorMsg = "Your current password is false, please try again";
+          return;
+        }
         try {
           const retry = await axios.post(
             "http://localhost:8080/auth/refresh",
@@ -336,10 +357,13 @@ export class ProfileComponent {
             this.errorMsg = "";
             return;
           }
-        } catch (e) {
-          console.error(e);
+        } catch (e: any) {
+          if (e.message === "Request failed with status code 400") {
+            this.errorMsg = "Your current password is false, please try again";
+            return;
+          }
         }
-      } else if (e.code === 'ERR_UNAUTHORIZED') {
+      } else if (e.code === "ERR_UNAUTHORIZED") {
         this.errorMsg = "Your current password is false, please try again";
         return;
       }
@@ -368,17 +392,20 @@ export class ProfileComponent {
     return /\d/.test(str);
   }
 
-  changeEmailSetting(){
+  changeEmailSetting() {
     this.sendEmail = !this.sendEmail;
   }
 
   async sendEmailSetting() {
-    try{
-      const resp = await axios.post('http://localhost:8080/user/update/email/setting', {setting: this.sendEmail}, {withCredentials:true});
+    try {
+      const resp = await axios.post(
+        "http://localhost:8080/user/update/email/setting",
+        { setting: this.sendEmail },
+        { withCredentials: true }
+      );
       this.sendEmail = resp.data.sendEmail;
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
   }
-
 }

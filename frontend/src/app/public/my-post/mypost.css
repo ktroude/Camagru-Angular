@@ -1,3 +1,8 @@
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../assets/font/Chillax-Regular.otf');
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -35,6 +40,17 @@ body{
     max-width: 100%;
     border-radius: 15px;
     cursor: pointer;
+}
+
+.no_post{
+    font-size: 4em;
+    font-family: 'Chillax';
+    color: rgb(162, 132, 246);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 /* @media (max-width: 1200px) {

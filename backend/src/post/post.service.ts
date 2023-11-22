@@ -20,7 +20,8 @@ export class PostService {
   ) {}
 
   async newPost(file: Express.Multer.File, data: string, userId: number) {
-    const uploadPath = path.join(__dirname, '..', 'post/creations');
+    const uploadPath = path.join(__dirname, '../../', 'uploads');
+    console.log("upPaths == ", uploadPath)
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath);
     }

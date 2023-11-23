@@ -4,6 +4,7 @@ import {
   BadRequestException,
   ConflictException,
   UnauthorizedException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { User } from './types';
@@ -16,7 +17,7 @@ export class UserService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
-    ) {}
+  ) {}
 
   async getAllUsers(): Promise<User[]> {
     return await this.prismaService.user.findMany({
@@ -24,6 +25,8 @@ export class UserService {
         id: true,
         email: true,
         username: true,
+        sendEmail: true,
+        role: true,
       },
     });
   }
@@ -38,7 +41,7 @@ export class UserService {
           id: true,
           email: true,
           username: true,
-          sendEmail:true,
+          sendEmail: true,
         },
       });
     } catch {
@@ -55,16 +58,15 @@ export class UserService {
         data: {
           email: data.email,
         },
+        select: {email:true}
       });
     } catch {
-      throw new BadRequestException(
-        'Email already taken',
-      );
+      throw new BadRequestException('Email already taken');
     }
   }
 
-  async updateUsername(userId:number, data:UsernameDto) {
-        try {
+  async updateUsername(userId: number, data: UsernameDto) {
+    try {
       return await this.prismaService.user.update({
         where: {
           id: userId,
@@ -72,11 +74,10 @@ export class UserService {
         data: {
           username: data.username,
         },
+        select:{username:true}
       });
     } catch {
-      throw new ConflictException(
-        'Username already taken',
-      );
+      throw new ConflictException('Username already taken');
     }
   }
 
@@ -84,15 +85,13 @@ export class UserService {
     try {
       const user = await this.prismaService.user.findUnique({
         where: {
-          id: userId
-        }
+          id: userId,
+        },
       });
-      if (!user)
-        throw new NotFoundException('User not found');
+      if (!user) throw new NotFoundException('User not found');
       const match = await bcrypt.compare(data.currentPassword, user.password);
-      if (!match)
-        throw new UnauthorizedException('Wrong password');
-      const hash:string = await this.hashData(data.newPassword);
+      if (!match) throw new UnauthorizedException('Wrong password');
+      const hash: string = await this.hashData(data.newPassword);
       await this.prismaService.user.update({
         where: {
           id: userId,
@@ -121,29 +120,69 @@ export class UserService {
       //   subject: 'Confirm your email',
       // });
     } catch {
-      throw new NotFoundException(
-        'User does not exist',
-      );
+      throw new NotFoundException('User does not exist');
     }
   }
 
-  async updateEmailPref(userId:number, data:any){
+  async updateEmailPref(userId: number, data: any) {
     try {
       const user = await this.prismaService.user.findUnique({
-        where: {id:userId}
+        where: { id: userId },
       });
       if (!user) {
         throw new NotFoundException('User not found');
       }
       const ret = await this.prismaService.user.update({
-        where: {id: user.id},
-        data: {sendEmail:data.setting},
-        select: {sendEmail:true}
+        where: { id: user.id },
+        data: { sendEmail: data.setting },
+        select: { sendEmail: true },
       });
-      console.log(ret);
       return ret;
-    } catch(e) {
+    } catch (e) {}
+  }
 
+  async getUserDataById(userId: string): Promise<User> {
+    try {
+      const id = parseInt(userId, 10);
+      const user = await this.prismaService.user.findUnique({
+        where: { id: id },
+        select: { id: true, username: true, sendEmail: true, email: true, isEmailConfirmed:true },
+      });
+      if (!user) throw new NotFoundException('User not found');
+      console.log(user);
+      return user;
+    } catch (e) {
+      console.error(e)
+      throw new ForbiddenException('Error while searching user datas');
+    }
+  }
+
+  async updateEmailConfirmation(userId:number, setting: boolean ) {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: { id: userId },
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      const ret = await this.prismaService.user.update({
+        where: { id: user.id },
+        data: { isEmailConfirmed: setting },
+        select: { isEmailConfirmed: true },
+      });
+      return ret;
+    } catch (e) {
+      throw new ForbiddenException('Error while update email confirmation')
+    }
+  }
+
+  async deleteUser(userId:number) {
+    try {
+      await this.prismaService.user.delete({
+        where: {id: userId}
+      });
+    } catch(e) {
+      console.log(e);
     }
   }
 
@@ -156,5 +195,4 @@ export class UserService {
   private async createToken(payload: object | Buffer, option?: JwtSignOptions) {
     return await this.jwtService.signAsync(payload, option);
   }
-
 }

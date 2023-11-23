@@ -1,65 +1,70 @@
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../../assets/font/Chillax-Bold.otf');
+}
 
 @font-face {
-  font-family: 'Chillax Bold';
-  src: url('../../../assets/font/Chillax-Bold.otf');
+    font-family: 'Chillax';
+    src: url('../../../assets/font/Chillax-Regular.otf');
 }
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
 
 header{
-    width: 100%;
-    margin: 0px;
-    padding: 0px;
     display: flex;
+    flex-direction: row;
+    background: linear-gradient(white, rgb(227, 231, 242));
+    width: 100vw;
+    height: 50px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+
+.title{
+    color: rgb(162, 132, 246);
+    font-family: "Chillax Bold";
+    cursor: pointer;
+}
+
+.button_box{
+    display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    height: 100px;
-    background-color: #a4a4a4;
-    border-bottom: 3px solid rgb(66, 141, 255);
-
-}
-
-
-.button_div{
-    margin-left: 3%;
-    padding-right: 3%;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    justify-content:center;
-    align-items: center;
-}
-
-.logo{
-    width: auto;
-    height: 90px;
-    margin-left: 1%;
-    cursor: pointer;
-}
-
-.header_button{
+    width: 230px;
     height: auto;
-    width: auto;
-    border: none;
-    border-radius: 10px;
-    background-color: rgb(66, 141, 255);
-    font-size: 1.2em;
-    color: rgb(227, 231, 242);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    cursor: pointer;
-    font-family: 'Chillax Bold';
 }
 
-.header_button:hover {
+button{
+    width: 100px;
+    color: white;
+    font-family: "Chillax";
+    background-color: rgb(162, 132, 246);
+    border: solid 1px transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+button:hover {
     background-color: rgb(227, 231, 242);
-    color: rgb(66, 141, 255);
+    color: rgb(162, 132, 246);
+    border: solid 1px rgb(162, 132, 246); 
     transition-delay: 0.1s;
 }
 
+@media screen and (max-width:600px){
 
-@media screen and (max-width: 320px) {
- 
-    .header_button{
-        font-size: 1em;
-        width: 100px;
+    .title{
+        font-size: 20px;
     }
 
+    button{
+        /* margin-right: 20px; */
+    }
 }

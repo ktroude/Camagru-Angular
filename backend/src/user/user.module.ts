@@ -5,6 +5,7 @@ import { MailsModule } from 'src/mails/mails.module';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
+import { EmailDTO } from 'src/auth/DTO';
 
 @Module({
   imports: [MailsModule],
@@ -19,11 +20,10 @@ export class UserModule implements OnModuleInit {
     await this.createAdmin();
   }
 
-
     async createAdmin() {
     const check = await this.prismaService.user.findUnique({
-      where: {username: 'admin'}
-    });
+       where: {id: 1}}
+      );
     if (check)
       return ;
     const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);

@@ -19,11 +19,12 @@ export class AdminGuard extends AuthGuard('jwt') {
     }
 
     try {
-      const decodedToken = jwt.verify(accessToken, this.configService.get('ACCESS_TOKEN_SECRET'));
+      const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
       request.user = decodedToken;
       const role = decodedToken['role'];
-      if (!role || role != 'ADMIN')
+      if (!role || role != 'ADMIN') {
         return false;
+      }
       return true;
     } catch (error) {
       return false;

@@ -1,0 +1,92 @@
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../../assets/font/Chillax-Regular.otf');
+}
+
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../../../assets/font/Chillax-Bold.otf');
+}
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.left{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.right{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.card{
+    font-family: 'Chillax';
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(162, 132, 246);
+    flex-direction: column;
+    height: auto;
+    width: 300px;
+    background-color: aliceblue;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+input{
+    margin-top: 10px;
+    width: 80%;
+    max-width: 250px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+    outline: none;
+    font-family: "Chillax";
+    text-align: center;
+}
+
+input:focus {
+    border-color: rgb(162, 132, 246);
+    box-shadow: 0 0 5px rgb(162, 132, 246);
+}
+
+button{
+    margin-top: 20px;
+    font-family: "Chillax";
+    height: auto;
+    width: 110px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(162, 132, 246);
+    font-size: 1.2em;
+    color: rgb(227, 231, 242);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    font-family: 'Chillax Bold';
+}
+
+button:hover {
+    background-color: rgb(227, 231, 242);
+    color: rgb(162, 132, 246);
+    border: solid 1px rgb(162, 132, 246); 
+    transition-delay: 0.1s;
+}

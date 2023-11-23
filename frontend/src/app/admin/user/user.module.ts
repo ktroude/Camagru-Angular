@@ -6,6 +6,7 @@ import { UserIndexComponent } from './user-index/user-index.component';
 import { UserEditComponent } from './user-edit/user-edit.component';
 import { UserAddComponent } from './user-add/user-add.component';
 import { UserDeleteComponent } from './user-delete/user-delete.component';
+import { FormsModule } from '@angular/forms';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { UserDeleteComponent } from './user-delete/user-delete.component';
   ],
   imports: [
     CommonModule,
-    UserRoutingModule
+    UserRoutingModule,
+    FormsModule
   ]
 })
 export class UserModule { }

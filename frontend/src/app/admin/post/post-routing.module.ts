@@ -7,6 +7,7 @@ import { PostDeleteComponent } from './post-delete/post-delete.component';
 
 const routes: Routes = [
   {path: '', component:PostIndexComponent},
+  {path: 'index', component:PostIndexComponent},
   {path:'edit/:id', component:PostEditComponent},
   {path:'add', component:PostAddComponent}, 
   {path:'delete/:id', component:PostDeleteComponent}

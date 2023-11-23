@@ -156,4 +156,5 @@ export class UserService {
   private async createToken(payload: object | Buffer, option?: JwtSignOptions) {
     return await this.jwtService.signAsync(payload, option);
   }
+
 }

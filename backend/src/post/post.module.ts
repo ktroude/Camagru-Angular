@@ -18,7 +18,6 @@ export class PostModule implements OnModuleInit {
 
     const posts = await this.prismaService.post.findMany();
      if (posts.length === 0) {
-
       await  this.generateAutoPost('uploads/1.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
       await  this.generateAutoPost('uploads/2.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 
       await  this.generateAutoPost('uploads/3.jpg', 0, 'JhonDoe', 'This is a fake post generated for the beauty of the homepage, hope you enjoy it :)'); 

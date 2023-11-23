@@ -8,7 +8,8 @@ import { AuthRequiredComponent } from './auth/auth-required/auth-required.compon
 const routes: Routes = [
   { path: '', loadChildren: () => import('./public/public.module').then(module => module.PublicModule)},
   { path:'admin', loadChildren: () => import('./admin/admin.module')
-    .then(m => m.AdminModule), canActivate: [adminGuard]
+    .then(m => m.AdminModule),
+     canActivate: [adminGuard]
   },
   { path:'auth', loadChildren: () => import('./auth/auth.module').then(m => m.AuthModule)},
   { path: 'error_403', component: Error403Component},

@@ -14,25 +14,38 @@ export const adminGuard: CanActivateFn = async (
   const router = inject(Router);
 
   try {
-    const response = await axios.get("http://localhost:8080/auth/verify/token");
-    if (response.status === 200) {
-      return true;
-    } else if (response.status === 401) {
-      const verify = await retry();
-      return verify;
+    const response = await axios.get(
+      "http://localhost:8080/auth/user/authority",
+      { withCredentials: true }
+    );
+    console.log("authority response: ", response.data);
+    if (response.data !== "ADMIN") {
+      redirect("/home");
+      return false;
     }
-    return false;
-  } catch (error) {
-    return false;
+    return true;
+  } catch (e) {
+    try {
+      await axios.post("http://localhost:8080/auth/refresh", null, {
+        withCredentials: true,
+      });
+      const response = await axios.get(
+        "http://localhost:8080/auth/user/authority",
+        { withCredentials: true }
+      );
+      console.log("authority response: ", response.data);
+      if (response.data !== "ADMIN"){
+        redirect("/home");
+        return false;
+      } 
+        return true;
+    } catch (e) {
+      redirect("/home");
+      return false;
+    }
   }
 
-  async function retry(): Promise<boolean> {
-    try {
-      const response = await axios.post("http://localhost:8080/auth/refresh");
-      if (response.status === 200) return true;
-      return false;
-    } catch {
-      return false;
-    }
+  function redirect(url: string) {
+    router.navigate([url]);
   }
 };

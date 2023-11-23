@@ -92,4 +92,11 @@ export class AuthController {
   confirmEmailByAdmin(@Param('id') userId: number) {
     return this.authService.confirmEmailByAdmin(userId);
   }
+
+  @Get('user/authority')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(AdminGuard)
+  getUserAuthority(@GetCurrentUserId() userId:number) {
+    return this.authService.getUserAuthority(userId);  
+  }
 }

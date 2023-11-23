@@ -250,6 +250,16 @@ export class AuthService {
     }
   }
 
+  async getUserAuthority(userId:number){
+    const user = await this.prismaService.user.findUnique({
+      where: {id: userId},
+      select: {role:true}
+    });
+    if (!user)
+      throw new NotFoundException('User not found');
+    return user.role;
+  }
+
   // UTILS
 
   private async hashData(data: string) {

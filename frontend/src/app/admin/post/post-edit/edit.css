@@ -1,0 +1,157 @@
+@font-face {
+    font-family: 'Chillax Bold';
+    src: url('../../../../assets/font/Chillax-Bold.otf');
+}
+
+@font-face {
+    font-family: 'Chillax';
+    src: url('../../../../assets/font/Chillax-Regular.otf');
+}   
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.picture{
+    margin-top: 10px;
+    border-radius: 10px;
+    height: auto;
+    width: 220px;
+    min-width: 300px;
+}
+
+.like_coms{
+    margin-top: 20px;
+    width: 50%;
+    min-width: 200px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.likes img {
+    height: 30px;
+    width: auto;
+}
+
+.likes p {
+    color: rgb(162, 132, 246);
+    font-family: 'Chillax';
+}
+
+.comments img {
+    height: 30px;
+    width: auto;
+}
+
+.comments p{
+    color: rgb(162, 132, 246);
+    font-family: 'Chillax';
+}
+
+.create_com{
+    margin-top: 20px;
+    width: 50%;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.create_com textarea{
+  padding: 20px;
+  margin-top: 20px;
+  width: 80%;
+  height: 15%;
+  border: 1px solid rgb(162, 132, 246);
+  color: rgb(162, 132, 246);
+  border-radius: 10px;
+  font-family: 'Chillax';
+  resize: none;
+  outline: none;
+}
+
+button{
+    margin-top: 20px;
+    margin-left: 20px;
+    font-family: "Chillax";
+    height: auto;
+    width: 120px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgb(162, 132, 246);
+    font-size: 1.2em;
+    color: rgb(227, 231, 242);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+    font-family: 'Chillax Bold';
+    border: solid 1px transparent;
+}
+
+button:hover {
+    background-color: rgb(227, 231, 242);
+    color: rgb(162, 132, 246);
+    border: solid 1px rgb(162, 132, 246); 
+    transition-delay: 0.1s;
+}
+
+.my_com{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: auto;
+}
+
+.other_com {
+    height: auto;
+    min-height: 50px;
+    width: 100%;
+    border: 1px solid rgb(162, 132, 246);
+    background-color: aliceblue;
+    border-radius: 10px;
+    margin-top: 10px;
+    display: flex;
+    justify-content:flex-start;
+    align-items: center;
+    font-family: 'Chillax';
+    padding: 10px;
+}
+
+.name{
+    font-family: 'Chillax Bold';
+    color: rgb(162, 132, 246);
+}
+
+.commit{
+    font-family: 'Chillax';
+}
+
+.delete{
+    position: relative;
+    top: 2px;
+    right: 2px;
+    height: 20px;
+    width: auto;
+    cursor: pointer;
+}
+
+.delete_post{
+    position: relative;
+    top: 0px;
+    right: 0px;
+}

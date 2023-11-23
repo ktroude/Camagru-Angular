@@ -7,7 +7,6 @@ import { Post } from 'src/app/interface/home.interface';
   selector: 'app-home',
   template: `
   <body>
-    
     <div class="container">
       <div *ngFor="let post of posts" class="box">
         <img [src]="'http://localhost:8080/' + post.picture" [alt]="'Image post of ' + post.author" (click)="redirectId('/post/', post.id)">

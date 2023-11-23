@@ -115,7 +115,9 @@ export class PostController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  getPostById(@Param('id') id: string) {
-    return this.postService.getPostById(id);
+  async getPostById(@Param('id') id: string) {
+    return await this.postService.getPostById(id);
   }
+
+
 }

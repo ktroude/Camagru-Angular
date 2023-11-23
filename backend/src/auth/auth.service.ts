@@ -133,8 +133,7 @@ export class AuthService {
       },
     });
     if (!user || !user.hashedRefreshToken) {
-      console.log('Je finis la')
-      throw new NotFoundException('User or his refresh token does not exist');
+       throw new NotFoundException('User or his refresh token does not exist');
     }
     const matches = bcrypt.compare(refreshToken, user.hashedRefreshToken);
     if (!matches) {

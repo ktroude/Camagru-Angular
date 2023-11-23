@@ -21,10 +21,10 @@ export class UserModule implements OnModuleInit {
   }
 
     async createAdmin() {
-    const check = await this.prismaService.user.findUnique({
-       where: {id: 1}}
+    const check = await this.prismaService.user.findMany({
+       where: {role: "ADMIN"}}
       );
-    if (check)
+    if (check.length > 0)
       return ;
     const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
     const admin = await this.prismaService.user.create({

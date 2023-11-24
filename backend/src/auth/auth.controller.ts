@@ -80,6 +80,13 @@ export class AuthController {
     return this.authService.recoverPassword(token, data);
   }
 
+  @Get('recover/password/check/:token')
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  checkToken(@Param('token') token:string) {
+    return this.authService.checkToken(token);
+  }
+
   @Get('verify/token')
   @HttpCode(HttpStatus.OK)
   verifyAccessTokenValidity(): string {

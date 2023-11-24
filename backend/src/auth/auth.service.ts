@@ -62,8 +62,8 @@ export class AuthService {
       });
 
       return res.status(201).send();
-    } catch(e) {
-      console.log(e)
+    } catch (e) {
+      console.log(e);
       throw new HttpException(
         'Username or email already taken',
         HttpStatus.CONFLICT,
@@ -133,11 +133,11 @@ export class AuthService {
       },
     });
     if (!user || !user.hashedRefreshToken) {
-       throw new NotFoundException('User or his refresh token does not exist');
+      throw new NotFoundException('User or his refresh token does not exist');
     }
     const matches = bcrypt.compare(refreshToken, user.hashedRefreshToken);
     if (!matches) {
-      console.log('Je finis ici')
+      console.log('Je finis ici');
       throw new ForbiddenException('Access denied');
     }
     const tokens = await this.getTokens(user.id, user.username, user.role);
@@ -200,7 +200,7 @@ export class AuthService {
         email: data.email,
       },
     });
-    if (!user) throw new NotFoundException('User or does not exist');
+    if (!user) return;
     const mailToken = await this.createToken(
       { email: user.email },
       {
@@ -217,9 +217,9 @@ export class AuthService {
     });
   }
 
-  async recoverPassword(token: string, data:PasswordDto) {
+  async recoverPassword(token: string, data: PasswordDto) {
     const match = this.jwtService.verify(token, {
-      secret: this.configService.get('SENGRID_JWT_SECRET'),
+      secret: process.env.SENGRID_JWT_SECRET,
     });
     if (
       !match ||
@@ -236,12 +236,13 @@ export class AuthService {
         },
       });
       if (!user) throw new NotFoundException('User does not exist');
+      const hash = await bcrypt.hash(data.password, 10);
       await this.prismaService.user.update({
         where: {
           id: user.id,
         },
         data: {
-          password: data.password,
+          password: hash,
         },
       });
     } catch {
@@ -249,14 +250,39 @@ export class AuthService {
     }
   }
 
-  async getUserAuthority(userId:number){
+  async getUserAuthority(userId: number) {
     const user = await this.prismaService.user.findUnique({
-      where: {id: userId},
-      select: {role:true}
+      where: { id: userId },
+      select: { role: true },
     });
-    if (!user)
-      throw new NotFoundException('User not found');
+    if (!user) throw new NotFoundException('User not found');
     return user.role;
+  }
+
+  async checkToken(token: string) {
+    try {
+      const match = this.jwtService.verify(token, {
+        secret: process.env.SENGRID_JWT_SECRET,
+      });
+      if (
+        !match ||
+        typeof match !== 'object' ||
+        !match.email ||
+        typeof match.email !== 'string'
+        ) {
+          throw new UnauthorizedException('Access denied');
+        }
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          email: match.email,
+        },
+        select: { id: true, username: true },
+      });
+      if (!user) throw new NotFoundException('User does not exist');
+      return user;
+    } catch (e) {
+      throw new ForbiddenException('Access denied');
+    }
   }
 
   // UTILS

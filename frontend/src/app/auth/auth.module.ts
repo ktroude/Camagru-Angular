@@ -7,6 +7,7 @@ import { LoginComponent } from './login/login.component';
 import { FormsModule } from '@angular/forms';
 import { RecoverComponent } from './recover/recover.component';
 import { AuthRequiredComponent } from './auth-required/auth-required.component';
+import { NewPasswordComponent } from './new-password/new-password.component';
 
 
 @NgModule({
@@ -14,7 +15,8 @@ import { AuthRequiredComponent } from './auth-required/auth-required.component';
     RegisterComponent,
     LoginComponent,
     RecoverComponent,
-    AuthRequiredComponent
+    AuthRequiredComponent,
+    NewPasswordComponent
   ],
   imports: [
     CommonModule,

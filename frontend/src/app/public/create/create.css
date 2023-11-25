@@ -277,7 +277,21 @@ body{
   width: 100%;
 }
 
-
+.posted{
+  position: absolute;
+  left: calc(50vw - 200px);
+  top: calc(50vh - 200px);
+  width: 200px;
+  height: 200px;
+  background-color: rgb(227, 231, 242);
+  color: rgb(162, 132, 246);
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-family: 'Chillax Bold';
+}
 
 
 

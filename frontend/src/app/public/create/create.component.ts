@@ -140,6 +140,11 @@ import axios from "axios";
           </button>
         </div>
       </div>
+      <div class="zoomed"  *ngIf="done === true" >        
+        <div class="posted">
+      Posted !
+    </div>
+    </div>
     </body>
   `,
   styleUrls: ["./create.css"],
@@ -159,14 +164,13 @@ export class CreateComponent implements OnInit, OnDestroy {
   selectedImage: File | null;
   description: string = "";
   backendReturn: any[] = [];
+  done:boolean=false;
 
   constructor(private router: Router) {
     this.i = 0;
     this.slides = [
       "assets/img/overlay/1.png",
       "assets/img/overlay/2.png",
-      "assets/img/overlay/3.png",
-      "assets/img/overlay/4.png",
       "assets/img/overlay/5.png",
       "assets/img/overlay/6.png",
       "assets/img/overlay/7.png",
@@ -425,6 +429,7 @@ export class CreateComponent implements OnInit, OnDestroy {
       await axios.post("http://localhost:8080/post/new", formData, {
         withCredentials: true,
       });
+      this.posted();
     } catch (e: any) {
       if (e.code === "ERR_BAD_REQUEST") {
         try {
@@ -459,5 +464,13 @@ export class CreateComponent implements OnInit, OnDestroy {
     } catch (error) {
      
     }
+  }
+
+  posted() {
+    this.unzoom();
+    this.done = true;
+    setTimeout(() => {
+      this.done = false;
+    }, 1000);
   }
 }
